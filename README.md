@@ -1,4 +1,6 @@
-# Latest Release Binary:
+# Empro Datalog Viewer
+
+## Latest Release Binary:
 
 | Platform | Binary |
 |---|---|
@@ -6,10 +8,17 @@
 | Linux | open with QtCreator and compile, no other dependencies. Tested with Qt5.8.0 |
 
 ## Supported Formats
+
 - .csv
 - .msl (standard megasquirt data logs)
 
-(see [here](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/SampleDatalogs) for sample data logs):
+(see [here](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/docs/sampleDatalogs) for sample data logs):
+
+## Screenshots
+
+![screenshot 1](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/docs/screenshots/1.png "Screenshot 1")
+
+![screenshot 2](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/docs/screenshots/2.png "Screenshot 2")
 
 ### Todo:
 - right click; single selection / multi selection
@@ -21,3 +30,4 @@
 - play/pause for realtime playback
 - show current value in channel list
 - show cursor coordinates, not snapped to line
+- screenshots
