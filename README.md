@@ -3,7 +3,7 @@
 | Platform | Binary |
 |---|---|
 | Win32 | [Empro Datalog Viewer v0.1.0.zip](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/Release/Win32/EmproDatalogViewer_0.1.0.zip) |
-| Linux | open with QtCreator and compile, no other dependencies |
+| Linux | open with QtCreator and compile, no other dependencies. Tested with Qt5.8.0 |
 
 ## Supported Formats
 - .csv
