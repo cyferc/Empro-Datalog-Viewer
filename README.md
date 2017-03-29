@@ -1,12 +1,17 @@
 # Latest Release Binary:
-Win32: [Empro Datalog Viewer v0.1.0.zip](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/Release/Win32/EmproDatalogViewer_0.0.1.zip)
+
+| Platform | Binary |
+| --- |--- | --- |
+| Win32 | [Empro Datalog Viewer v0.1.0.zip](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/Release/Win32/EmproDatalogViewer_0.0.1.zip) |
+| Linux | open with QtCreator and compile, no other dependencies |
 
 ## Supported Formats
-(see [here](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/SampleDatalogs) for sample data logs):
 - .csv
 - .msl (standard megasquirt data logs)
 
-## Todo:
+(see [here](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/SampleDatalogs) for sample data logs):
+
+### Todo:
 - right click; single selection / multi selection
 - axis
 - solid background for text in plot
