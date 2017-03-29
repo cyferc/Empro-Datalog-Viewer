@@ -16,9 +16,9 @@
 
 ## Screenshots
 
-![screenshot 1](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/docs/screenshots/1.png "Screenshot 1")
+![screenshot 1](https://raw.githubusercontent.com/cyferc/Empro-Datalog-Viewer/master/docs/screenshots/1.png)
 
-![screenshot 2](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/docs/screenshots/2.png "Screenshot 2")
+![screenshot 2](https://raw.githubusercontent.com/cyferc/Empro-Datalog-Viewer/master/docs/screenshots/2.png)
 
 ### Todo:
 - right click; single selection / multi selection
