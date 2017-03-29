@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>744</width>
+    <height>408</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Empro Datalog Viewer</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>744</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuDock_Windows">
+     <property name="title">
+      <string>Dock Windows</string>
+     </property>
+    </widget>
+    <addaction name="actionSetup"/>
+    <addaction name="separator"/>
+    <addaction name="actionFullscreen"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_Points"/>
+    <addaction name="actionShow_Markers"/>
+    <addaction name="actionAnti_Aliasing"/>
+    <addaction name="actionEven_Spacing"/>
+    <addaction name="separator"/>
+    <addaction name="menuDock_Windows"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSetup"/>
+   <addaction name="separator"/>
+   <addaction name="actionAdd_Plot"/>
+   <addaction name="actionDelete_Plot"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoom_In"/>
+   <addaction name="actionZoom_Out"/>
+   <addaction name="separator"/>
+   <addaction name="actionFullscreen"/>
+   <addaction name="actionSave_screenshot"/>
+   <addaction name="actionEven_Spacing"/>
+   <addaction name="separator"/>
+   <addaction name="actionShow_Points"/>
+   <addaction name="actionShow_Markers"/>
+   <addaction name="actionAnti_Aliasing"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetChannelList">
+   <property name="minimumSize">
+    <size>
+     <width>100</width>
+     <height>100</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Channel List</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetSelection">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>100</width>
+     <height>100</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Selection</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetSelectionContainer">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
+   </widget>
+  </widget>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Folder.png</normaloff>icons/Folder.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Exit.png</normaloff>icons/Exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionShow_Points">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Stats_graph_#000000_500px.png</normaloff>icons/Stats_graph_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Data Points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show data points</string>
+   </property>
+  </action>
+  <action name="actionShow_Markers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Hand_#000000_500px.png</normaloff>icons/Hand_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Current Value Markers</string>
+   </property>
+   <property name="iconText">
+    <string>Show Markers</string>
+   </property>
+   <property name="toolTip">
+    <string>Show current value markers</string>
+   </property>
+  </action>
+  <action name="actionAnti_Aliasing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Statistic_report_#000000_500px.png</normaloff>icons/Statistic_report_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Anti Aliasing</string>
+   </property>
+   <property name="toolTip">
+    <string>Anti aliasing</string>
+   </property>
+  </action>
+  <action name="actionAdd_Plot">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Plus.png</normaloff>icons/Plus.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Plot</string>
+   </property>
+   <property name="toolTip">
+    <string>Add plot</string>
+   </property>
+  </action>
+  <action name="actionDelete_Plot">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Minus_#000000_500px.png</normaloff>icons/Minus_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Plot</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete bottom plot</string>
+   </property>
+  </action>
+  <action name="actionRightMouseMultiSelection">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Multi Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Right mouse button drag multiple selection</string>
+   </property>
+  </action>
+  <action name="actionSetup">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Gear.png</normaloff>icons/Gear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Setup</string>
+   </property>
+  </action>
+  <action name="actionFullscreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Resize.png</normaloff>icons/Resize.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fullscreen</string>
+   </property>
+  </action>
+  <action name="actionEven_Spacing">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Menu_#000000_500px.png</normaloff>icons/Menu_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Even Spacing</string>
+   </property>
+   <property name="toolTip">
+    <string>Even graph spacing</string>
+   </property>
+  </action>
+  <action name="actionSave_screenshot">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Camera.png</normaloff>icons/Camera.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save screenshot</string>
+   </property>
+   <property name="toolTip">
+    <string>Save screenshot</string>
+   </property>
+  </action>
+  <action name="actionZoom_In">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Zoom_in_#000000_500px.png</normaloff>icons/Zoom_in_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
+  </action>
+  <action name="actionZoom_Out">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Zoom_out_#000000_500px.png</normaloff>icons/Zoom_out_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
+   </property>
+  </action>
+  <action name="actionRightMouseSingleSelection">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Single Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Right mouse button single selection</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/Info_#000000_500px.png</normaloff>icons/Info_#000000_500px.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
