@@ -169,9 +169,7 @@ void PointList::append(const QPointF& point)
     /// Y Value
     if (point.y() > maxY)
     {
-        //qDebug() << "setting maxY: " << t.y();
         maxY = point.y();
-        //qDebug() << "maxY = " << getMaxY();
     }
 
     if (point.y() < minY)

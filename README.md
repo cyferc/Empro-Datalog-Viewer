@@ -1,4 +1,5 @@
 # Empro Datalog Viewer
+I started this project to quickly view .csv data logs that I saved from my home made ECU. It is a highly efficient data series renderer, implementing binary search (worst case O(log n)) to find the axis limits within the data series. O(n) to render everything between the axis limits.
 
 ## Latest Release Binary:
 
@@ -10,7 +11,7 @@
 ## Supported Formats
 
 - .csv
-- .msl (standard megasquirt data logs)
+- .msl (standard megasquirt format)
 
 (see [here](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/docs/sampleDatalogs) for sample data logs):
 
@@ -21,12 +22,14 @@
 ![screenshot 2](https://raw.githubusercontent.com/cyferc/Empro-Datalog-Viewer/master/docs/screenshots/2.png)
 
 ### Todo:
-- right click; single selection / multi selection
-- axis
-- solid background for text in plot
-- snap to points / interpolate
-- use megasquirt .msl units on second line
+- render flat line data series
+- y-axis tick labels
+- x-axis tick labels
+- semi-transparent background for text in plot
 - filename in title
+- right click; single selection / multi selection
+- snap to points / interpolate
+- use megasquirt .msl units from log file
 - play/pause for realtime playback
 - show current value in channel list
 - show cursor coordinates, not snapped to line

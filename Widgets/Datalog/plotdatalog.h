@@ -43,7 +43,7 @@ private:
     const int currentValueMarkerLineThickness = 4;
     const int currentValueMarkerLineHalfLength = 5;
 
-    const int lineWidth = 1;
+    const double lineWidth = 1.5;
     const int lineColorBetweenA = 70;
     const int lineColorBetweenB = 255;
 
