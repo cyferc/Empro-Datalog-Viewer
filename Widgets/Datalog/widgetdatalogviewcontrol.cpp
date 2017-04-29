@@ -41,11 +41,18 @@ WidgetDatalogViewControl::WidgetDatalogViewControl(QWidget *parent,
     splitterPlots->setHandleWidth(3);
     splitterPlots->setStyleSheet("QSplitter::handle { background-color: white };");
 
+    horizontalAxis = new HorizontalAxis();
+    QObject::connect(this,
+                     SIGNAL(setXAxisBounds(double, double)),
+                     horizontalAxis,
+                     SLOT(setAxisBounds(double,double)));
+
     QGridLayout *contentLayout = new QGridLayout(this);
     contentLayout->setSpacing(0);
     contentLayout->setContentsMargins(0, 0, 0, 0);
 
     contentLayout->addWidget(splitterPlots);
+    contentLayout->addWidget(horizontalAxis);
 
     //////// Right Click Menu ////////
     plotContextMenu = new QMenu(this);

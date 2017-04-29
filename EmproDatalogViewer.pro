@@ -18,14 +18,16 @@ SOURCES += main.cpp\
     Widgets/Datalog/plotdatalog.cpp \
     Widgets/Datalog/pointlist.cpp \
     Widgets/Datalog/widgetdatalogviewcontrol.cpp \
-    helpers.cpp
+    helpers.cpp \
+    Widgets/Datalog/horizontalaxis.cpp
 
 HEADERS  += mainwindow.h \
     Widgets/Datalog/dialogplotchannelchoose.h \
     Widgets/Datalog/plotdatalog.h \
     Widgets/Datalog/pointlist.h \
     Widgets/Datalog/widgetdatalogviewcontrol.h \
-    helpers.h
+    helpers.h \
+    Widgets/Datalog/horizontalaxis.h
 
 FORMS    += mainwindow.ui \
     Widgets/Datalog/dialogplotchannelchoose.ui

@@ -9,6 +9,7 @@
 #include <QDockWidget>
 #include "pointlist.h"
 #include "plotdatalog.h"
+#include "horizontalaxis.h"
 
 class WidgetDatalogViewControl : public QWidget
 {
@@ -59,6 +60,7 @@ private:
     bool processDatalogFirstLine(QByteArray line);
     void addPlointListsToChannelList();
 
+    HorizontalAxis *horizontalAxis;
     QSplitter *splitterPlots;
     QTableWidget *tableChannelList;
     QList<PointList*> listOfPointLists;
