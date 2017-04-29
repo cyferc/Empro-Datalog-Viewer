@@ -21,7 +21,6 @@ I started this project to quickly view .csv data logs that I saved from my home 
 ### Todo:
 - render flat line data series
 - y-axis tick labels
-- x-axis tick labels
 - semi-transparent background for text in plot
 - filename in title
 - right click; single selection / multi selection
