@@ -31,9 +31,12 @@ class Helpers
 {
 public:
     static int randInt(int low, int high);
-    static int round_to_nearest(double input, int to_nearest);
-    static int round_up_to(int round_to_nearest, int num);
-    static int round_down_to(int round_to_nearest, int num);
+    static double round_down_to_nearest_d(double value_to_round, double round_to);
+    static double round_up_to_nearest_d(double value_to_round, double round_to);
+    static double round_to_nearest_d(double value_to_round, double round_to);
+    static int round_to_nearest_i(double input, int to_nearest);
+    static int round_up_to_i(int round_to_nearest, int num);
+    static int round_down_to_i(int round_to_nearest, int num);
     static double LinearInterpolation(double x0, double y0, double x1, double y1, double x);
     static double BilinearInterpolation(double q11, double q12, double q21, double q22, double x1, double x2, double y1, double y2, double x, double y) ;
     static double Map(double x, double in_min, double in_max, double out_min, double out_max);

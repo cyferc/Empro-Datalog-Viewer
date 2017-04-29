@@ -1,6 +1,7 @@
 #include "widgetdatalogviewcontrol.h"
 #include "helpers.h"
 #include "dialogplotchannelchoose.h"
+#include "verticalaxis.h"
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -73,6 +74,7 @@ void WidgetDatalogViewControl::addPlot()
     plot->vecChannelsDraw.resize(listOfPointLists.count());
     plot->vecChannelsYAxis.clear();
     plot->vecChannelsYAxis.resize(listOfPointLists.count());
+
 
     splitterPlots->addWidget(plot);
 

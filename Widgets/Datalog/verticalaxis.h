@@ -1,13 +1,13 @@
-#ifndef HORIZONTALAXIS_H
-#define HORIZONTALAXIS_H
+#ifndef VERTICALAXIS_H
+#define VERTICALAXIS_H
 
 #include <QWidget>
 
-class HorizontalAxis : public QWidget
+class VerticalAxis : public QWidget
 {
     Q_OBJECT
 public:
-    explicit HorizontalAxis(QWidget *parent = 0);
+    explicit VerticalAxis(QWidget *parent = 0);
 
 signals:
 
@@ -19,7 +19,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
-    void dataPointMapToScreenX(double &xValue, double xAxisBoundMin, double xAxisBoundMax);
+    void dataPointMapToScreenY(double &yValue, double yAxisBoundMin, double yAxisBoundMax);
     int max_steps = 2;
     double axisBoundMin = 0.0;
     double axisBoundMax = 10.0;
@@ -29,4 +29,4 @@ private:
     QString units = "s";
 };
 
-#endif // HORIZONTALAXIS_H
+#endif // VERTICALAXIS_H

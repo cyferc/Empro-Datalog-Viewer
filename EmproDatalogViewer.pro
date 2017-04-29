@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     Widgets/Datalog/pointlist.cpp \
     Widgets/Datalog/widgetdatalogviewcontrol.cpp \
     helpers.cpp \
-    Widgets/Datalog/horizontalaxis.cpp
+    Widgets/Datalog/horizontalaxis.cpp \
+    Widgets/Datalog/verticalaxis.cpp
 
 HEADERS  += mainwindow.h \
     Widgets/Datalog/dialogplotchannelchoose.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     Widgets/Datalog/pointlist.h \
     Widgets/Datalog/widgetdatalogviewcontrol.h \
     helpers.h \
-    Widgets/Datalog/horizontalaxis.h
+    Widgets/Datalog/horizontalaxis.h \
+    Widgets/Datalog/verticalaxis.h
 
 FORMS    += mainwindow.ui \
     Widgets/Datalog/dialogplotchannelchoose.ui

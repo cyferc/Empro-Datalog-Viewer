@@ -8,14 +8,41 @@ int Helpers::randInt(int low, int high)
     return qrand() % ((high + 1) - low) + low;
 }
 
-int Helpers::round_to_nearest(double input, int to_nearest)
+double Helpers::round_down_to_nearest_d(double value_to_round, double round_to)
+{
+    return value_to_round - fmod(value_to_round, round_to);
+}
+
+double Helpers::round_up_to_nearest_d(double value_to_round, double round_to)
+{
+    return round_down_to_nearest_d(value_to_round, round_to) + round_to;
+}
+
+double Helpers::round_to_nearest_d(double value_to_round, double round_to)
+{
+    double left_over = fmod(value_to_round, round_to);
+    double half_round_to = round_to / 2.0;
+
+    if (left_over < half_round_to)
+    {
+        // Round down
+        return value_to_round - left_over;
+    }
+    else
+    {
+        // Round up
+        return (value_to_round - left_over) + round_to;
+    }
+}
+
+int Helpers::round_to_nearest_i(double input, int to_nearest)
 {
     return (int)round(input / to_nearest) * to_nearest;
 }
 
 /* Round up a number                               */
 /* (Negative numbers go DOWN)                      */
-int Helpers::round_up_to(int round_to_nearest, int num)
+int Helpers::round_up_to_i(int round_to_nearest, int num)
 {
     int sign = 1;
 
@@ -32,7 +59,7 @@ int Helpers::round_up_to(int round_to_nearest, int num)
 
 /* Round down a number                             */
 /* (Negative numbers go UP)                        */
-int Helpers::round_down_to(int round_to_nearest, int num)
+int Helpers::round_down_to_i(int round_to_nearest, int num)
 {
     int sign = 1;
 
@@ -74,5 +101,5 @@ double Helpers::BilinearInterpolation(double q11, double q12, double q21, double
 
 double Helpers::Map(double x, double in_min, double in_max, double out_min, double out_max)
 {
-        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

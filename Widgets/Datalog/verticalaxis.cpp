@@ -1,14 +1,12 @@
-#include "horizontalaxis.h"
+#include "verticalaxis.h"
 #include "helpers.h"
-#include <QPainter>
 
+#include <QPainter>
 #include <QDebug>
 
-#define BETWEEN(value, min, max) (value < max && value > min)
-
-HorizontalAxis::HorizontalAxis(QWidget *parent) : QWidget(parent)
+VerticalAxis::VerticalAxis(QWidget *parent) : QWidget(parent)
 {
-    this->setMinimumHeight(20);
+    this->setMinimumWidth(30);
 
     setAutoFillBackground(true);
     QPalette palette(this->palette());
@@ -16,21 +14,21 @@ HorizontalAxis::HorizontalAxis(QWidget *parent) : QWidget(parent)
     setPalette(palette);
 }
 
-void HorizontalAxis::resizeEvent(QResizeEvent *event)
+void VerticalAxis::resizeEvent(QResizeEvent *event)
 {
     max_steps = width() / 50;
 }
 
-void HorizontalAxis::dataPointMapToScreenX(double &xValue, double xAxisBoundMin, double xAxisBoundMax)
+void VerticalAxis::dataPointMapToScreenY(double &yValue, double yAxisBoundMin, double yAxisBoundMax)
 {
-    xValue = Helpers::LinearInterpolation(xAxisBoundMin,
-                                          0,
-                                          xAxisBoundMax,
-                                          width(),
-                                          xValue);
+    yValue = Helpers::LinearInterpolation(yAxisBoundMin,
+                                          lineWidth,
+                                          yAxisBoundMax,
+                                          height() - lineWidth,
+                                          yValue);
 }
 
-void HorizontalAxis::paintEvent(QPaintEvent *)
+void VerticalAxis::paintEvent(QPaintEvent *)
 {
     QPen pen;
     QPainter painter(this);
@@ -43,7 +41,7 @@ void HorizontalAxis::paintEvent(QPaintEvent *)
     painter.setPen(pen);
 
     // Top line
-    painter.drawLine(QPoint(0, 0), QPoint(width(), 0));
+    painter.drawLine(QPoint(width(), 0), QPoint(width(), height()));
 
     double step_unaligned = axisRange / max_steps;
     double round_to;
@@ -138,17 +136,17 @@ void HorizontalAxis::paintEvent(QPaintEvent *)
     double start_value = Helpers::round_down_to_nearest_d(axisBoundMin, round_to);
 
     qDebug() << "step_u:" << step_unaligned << "\tstep_a: " << step_aligned << "\tstart: " << start_value;
-
+/*
     for (double current_value = start_value - step_aligned; current_value < (axisBoundMax); current_value += step_aligned)
     {
         double xValue = current_value;
         dataPointMapToScreenX(xValue, axisBoundMin, axisBoundMax);
         painter.drawLine(QPoint(xValue, 0), QPoint(xValue, height() * 0.4));
         painter.drawText(QPoint(xValue, height()), QString::number(current_value).append(" ").append(units));
-    }
+    }*/
 }
 
-void HorizontalAxis::setAxisBounds(double min, double max)
+void VerticalAxis::setAxisBounds(double min, double max)
 {
     if (min > max)
         return;
