@@ -24,8 +24,8 @@ private:
     double axisBoundMin = 0.0;
     double axisBoundMax = 10.0;
     double axisRange = 10.0;
-    bool antiAliasing = false;
     int lineWidth = 1;
+    int minimumHeight = 12;
     QString units = "s";
 };
 

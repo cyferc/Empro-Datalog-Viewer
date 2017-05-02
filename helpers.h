@@ -3,6 +3,7 @@
 
 #define ABS(x)         ((x < 0) ? (-x) : x)
 #define IS_NEGATIVE(x) ((x < 0) ? true : false)
+#define BETWEEN(value, min, max) (value < max && value > min)
 
 // a = target variable, b = bit number to act upon 0-n
 #define BIT_SET(a,b) ((a) |= (1<<(b)))

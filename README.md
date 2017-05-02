@@ -4,7 +4,7 @@ I started this project to quickly view .csv data logs that I saved from my home 
 ## Latest Release Binary:
 | Platform | Binary |
 |---|---|
-| Win32 | [Empro Datalog Viewer v0.1.0.zip](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/Release/Win32/EmproDatalogViewer_0.1.0.zip) |
+| Win32 | [Empro Datalog Viewer v0.2.0.zip](https://github.com/cyferc/Empro-Datalog-Viewer/tree/master/Release/Win32/EmproDatalogViewer_0.2.0.zip) |
 | Linux | open with QtCreator and compile, no other dependencies. Tested with Qt5.8.0 |
 
 ## Supported Formats
