@@ -11,11 +11,14 @@
 #include "plotdatalog.h"
 #include "horizontalaxis.h"
 
+class MainWindow;
+
 class WidgetDatalogViewControl : public QWidget
 {
     Q_OBJECT
 public:
     explicit WidgetDatalogViewControl(QWidget *parent,
+                                      MainWindow* mainWindow,
                                       QDockWidget *dockWidgetChannelList,
                                       QDockWidget *dockWidgetSelection);
 
@@ -60,11 +63,12 @@ private:
     bool processDatalogFirstLine(QByteArray line);
     void addPlointListsToChannelList();
 
-    HorizontalAxis *horizontalAxis;
-    QSplitter *splitterPlots;
-    QTableWidget *tableChannelList;
+    MainWindow* _mainWindow;
+    HorizontalAxis* horizontalAxis;
+    QSplitter* splitterPlots;
+    QTableWidget* tableChannelList;
     QList<PointList*> listOfPointLists;
-    QMenu *plotContextMenu;
+    QMenu* plotContextMenu;
 
     double xAxisBoundMin = 2.0;
     double xAxisBoundMax = 5.0;

@@ -8,11 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(cWindowTitle);
 
     // start Maximized
     showMaximized();
 
     _widgetDatalogViewControl = new WidgetDatalogViewControl(this,
+                                                             this,
                                                              ui->dockWidgetChannelList,
                                                              ui->dockWidgetSelection);
     QObject::connect(this,
@@ -35,6 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::SetWindowTitle(QString title)
+{
+    setWindowTitle(title + " - " + cWindowTitle);
 }
 
 void MainWindow::on_actionExit_triggered()

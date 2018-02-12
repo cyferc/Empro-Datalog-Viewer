@@ -2,6 +2,7 @@
 #include "helpers.h"
 #include "dialogplotchannelchoose.h"
 #include "verticalaxis.h"
+#include "mainwindow.h"
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -11,10 +12,13 @@
 #include <QHeaderView>
 #include <QCheckBox>
 
+
 WidgetDatalogViewControl::WidgetDatalogViewControl(QWidget *parent,
+                                                   MainWindow* mainWindow,
                                                    QDockWidget *dockWidgetChannelList,
                                                    QDockWidget *dockWidgetSelection) :
-    QWidget(parent)
+    QWidget(parent),
+    _mainWindow(mainWindow)
 {
     tableChannelList = new QTableWidget(this);
     tableChannelList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -191,16 +195,16 @@ void WidgetDatalogViewControl::plotMousePressEvent(QMouseEvent *event)
 
     //if (event->button() == Qt::RightButton)
     //{
-        //QAction* selectedItem = plotContextMenu->exec(senderPlot->mapToGlobal(event->pos()));
+    //QAction* selectedItem = plotContextMenu->exec(senderPlot->mapToGlobal(event->pos()));
 
-        // If something was pressed
-        //if (selectedItem)
-        //{
-        //    if (selectedItem->text().compare(plotContextMenuStrChooseChannels) == 0)
-        //    {
+    // If something was pressed
+    //if (selectedItem)
+    //{
+    //    if (selectedItem->text().compare(plotContextMenuStrChooseChannels) == 0)
+    //    {
 
-        //    }
-        //}
+    //    }
+    //}
     //}
     //else
     if (event->button() == Qt::LeftButton)
@@ -271,97 +275,111 @@ void WidgetDatalogViewControl::openDatalogClicked()
                                                     "",
                                                     tr("Files (*.csv);;Files (*.msl)"));
 
-    if (!fileName.isEmpty())
+    if (fileName.isEmpty())
     {
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", "File is unreadable!", QMessageBox::Ok);
+        return;
+    }
+
+    if (fileName.endsWith(".csv", Qt::CaseInsensitive))
+    {
+        fileType = FileType_CSV;
+    }
+    else if (fileName.endsWith(".msl", Qt::CaseInsensitive))
+    {
+        fileType = FileType_Megasquirt_MSL;
+    }
+    else
+    {
+        // error
+        QMessageBox::warning(this, "Error", "File type is not supported!", QMessageBox::Ok);
+        return;
+    }
+
+    deleteAllIn_ListOfPointLists();
+
+    int lineNum = 1;
+    while (!file.atEnd())
+    {
+        QByteArray line = file.readLine();
+        line = line.trimmed(); // Remove start and end white spaces
+
+        if (line.startsWith('#') || line.startsWith('"'))
         {
-            QMessageBox::warning(this, "Error", "File is unreadable!", QMessageBox::Ok);
-            return;
+            continue;
         }
 
-        if (fileName.endsWith(".csv", Qt::CaseInsensitive))
+        if (lineNum == 1)
         {
-            fileType = FileType_CSV;
+            // First Line
+            if (!processDatalogFirstLine(line))
+            {
+                deleteAllIn_ListOfPointLists();
+                return;
+            }
         }
-        else if (fileName.endsWith(".msl", Qt::CaseInsensitive))
+        else if (lineNum == 2)
         {
-            fileType = FileType_Megasquirt_MSL;
+
         }
         else
         {
-            // error
-            QMessageBox::warning(this, "Error", "File type is not supported!", QMessageBox::Ok);
-            return;
+            // Rest of Lines
+            if (!processDatalogLine(line, lineNum))
+            {
+                deleteAllIn_ListOfPointLists();
+                return;
+            }
         }
 
-        deleteAllIn_ListOfPointLists();
+        lineNum++;
+    }
 
-        int lineNum = 1;
-        while (!file.atEnd())
+    // Set initial axis bounds
+    for (int i = 0; i < listOfPointLists.count(); i++)
+    {
+        if (i == 0)
         {
-            QByteArray line = file.readLine();
-            line = line.trimmed(); // Remove start and end white spaces
+            /// Initial X axis bounds
+            xAxisBoundMin = listOfPointLists.at(0)->getMinX();
 
-            if (line.startsWith('#') || line.startsWith('"'))
+            if (initialXAxisBoundMax < listOfPointLists.at(0)->getMaxX())
             {
-                continue;
-            }
-
-            if (lineNum == 1)
-            {
-                // First Line
-                if (!processDatalogFirstLine(line))
-                {
-                    deleteAllIn_ListOfPointLists();
-                    return;
-                }
-            }
-            else if (lineNum == 2)
-            {
-
+                xAxisBoundMax = xAxisBoundMin + initialXAxisBoundMax;
             }
             else
             {
-                // Rest of Lines
-                if (!processDatalogLine(line, lineNum))
-                {
-                    deleteAllIn_ListOfPointLists();
-                    return;
-                }
+                xAxisBoundMax = listOfPointLists.at(0)->getMaxX();
             }
 
-            lineNum++;
+            emit setXAxisBounds(xAxisBoundMin, xAxisBoundMax);
         }
 
-        // Set initial axis bounds
-        for (int i = 0; i < listOfPointLists.count(); i++)
-        {
-            if (i == 0)
-            {
-                /// Initial X axis bounds
-                xAxisBoundMin = listOfPointLists.at(0)->getMinX();
-
-                if (initialXAxisBoundMax < listOfPointLists.at(0)->getMaxX())
-                {
-                    xAxisBoundMax = xAxisBoundMin + initialXAxisBoundMax;
-                }
-                else
-                {
-                    xAxisBoundMax = listOfPointLists.at(0)->getMaxX();
-                }
-
-                emit setXAxisBounds(xAxisBoundMin, xAxisBoundMax);
-            }
-
-            /// Initial Y axis bounds
-            listOfPointLists.at(i)->setAxisBoundsY(listOfPointLists.at(i)->getMinY(),
-                                                   listOfPointLists.at(i)->getMaxY());
-        }
-
-        addPlointListsToChannelList();
-        resetPlotVectorSizes();
+        /// Initial Y axis bounds
+        listOfPointLists.at(i)->setAxisBoundsY(listOfPointLists.at(i)->getMinY(),
+                                               listOfPointLists.at(i)->getMaxY());
     }
+
+    addPlointListsToChannelList();
+    resetPlotVectorSizes();
+
+    QString fileNameNoDir;
+    for (QString::reverse_iterator i = fileName.rbegin(); i != fileName.rend(); ++i )
+    {
+        if (*i == '/')
+        {
+            break;
+        }
+        fileNameNoDir.prepend(*i);
+    }
+
+    _mainWindow->SetWindowTitle(fileNameNoDir);
 }
 
 void WidgetDatalogViewControl::deleteAllIn_ListOfPointLists()
@@ -370,7 +388,7 @@ void WidgetDatalogViewControl::deleteAllIn_ListOfPointLists()
     qDeleteAll(listOfPointLists);
     listOfPointLists.clear();
 
-    for (int i = 0; i < splitterPlots->count(); i++)
+    for (int i = 0; i < splitterPlots->count(); ++i)
     {
         PlotDatalog* plot = qobject_cast<PlotDatalog *>(splitterPlots->children().at(i));
         plot->clearPointLists();

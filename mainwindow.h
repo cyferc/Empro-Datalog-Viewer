@@ -15,6 +15,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void SetWindowTitle(QString title);
+
+    const QString cWindowTitle = "Empro Datalog Viewer";
+
 signals:
     void evenPlotSpacing();
 
