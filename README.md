@@ -19,10 +19,11 @@ I started this project to quickly view .csv data logs that I saved from my home 
 ![screenshot 2](https://raw.githubusercontent.com/cyferc/Empro-Datalog-Viewer/master/docs/screenshots/2.png)
 
 ### Todo:
+- add "do not show again" option to error dialog when opening file
+- convert PlotDatalog::listPlots and PointList::listPoints to std::vector
 - render flat line data series
 - y-axis tick labels
 - semi-transparent background for text in plot
-- filename in title
 - right click; single selection / multi selection
 - snap to points / interpolate
 - use megasquirt .msl units from log file
