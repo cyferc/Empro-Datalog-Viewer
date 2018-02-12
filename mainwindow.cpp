@@ -16,9 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
                                                              ui->dockWidgetChannelList,
                                                              ui->dockWidgetSelection);
     QObject::connect(this,
-                     SIGNAL(evenPlotSpacing()),
+                     &MainWindow::evenPlotSpacing,
                      _widgetDatalogViewControl,
-                     SLOT(evenPlotSpacing()));
+                     &WidgetDatalogViewControl::evenPlotSpacing);
 
     QGridLayout *contentLayout = new QGridLayout(ui->centralWidget);
     contentLayout->setSpacing(0);

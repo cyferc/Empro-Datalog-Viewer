@@ -33,8 +33,8 @@ private:
     Ui::DialogPlotChannelChoose *ui;
     int selectedIndex;
     QSplitter *_splitterPlots;
-    QStackedWidget *_stackedTables;
     QList<PointList *> _listOfPointLists;
+    QStackedWidget *_stackedTables;
 
     const int ColumnChannel = 0;
     const int ColumnPlot = 1;

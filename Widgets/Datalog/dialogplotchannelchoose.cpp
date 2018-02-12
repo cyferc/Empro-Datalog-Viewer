@@ -7,9 +7,9 @@
 
 DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointLists, QSplitter *splitterPlots, QWidget *parent) :
     QDialog(parent),
+    ui(new Ui::DialogPlotChannelChoose),
     _splitterPlots(splitterPlots),
-    _listOfPointLists(listOfPointLists),
-    ui(new Ui::DialogPlotChannelChoose)
+    _listOfPointLists(listOfPointLists)
 {
     ui->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -21,8 +21,10 @@ DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointL
     stackedLayout->setContentsMargins(0, 0, 0, 0);
     stackedLayout->addWidget(_stackedTables);
 
-    connect(ui->comboBoxPlotNumber, SIGNAL(activated(int)),
-            _stackedTables, SLOT(setCurrentIndex(int)));
+    connect(ui->comboBoxPlotNumber,
+            static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            _stackedTables,
+            &QStackedWidget::setCurrentIndex);
 
     // Create table for each plot
     for (int plotIndex = 0; plotIndex < splitterPlots->count(); plotIndex++)
@@ -68,9 +70,9 @@ DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointL
             chBoxDraw->setChecked(plot->vecChannelsDraw[channel]);
 
             QObject::connect(chBoxDraw,
-                             SIGNAL(stateChanged(int)),
+                             &QCheckBox::stateChanged,
                              this,
-                             SLOT(checkBoxPlotStateChanged(int)));
+                             &DialogPlotChannelChoose::checkBoxPlotStateChanged);
 
             // Centre the checkbox
             QHBoxLayout *pLayout = new QHBoxLayout(chBoxContainerWidget);
@@ -94,9 +96,9 @@ DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointL
             }
 
             QObject::connect(chBoxYAxis,
-                             SIGNAL(stateChanged(int)),
+                             &QCheckBox::stateChanged,
                              this,
-                             SLOT(checkBoxYAxisStateChanged(int)));
+                             &DialogPlotChannelChoose::checkBoxYAxisStateChanged);
 
             // Centre the checkbox
             QHBoxLayout *pLayoutYAxis = new QHBoxLayout(chBoxContainerWidgetYAxis);

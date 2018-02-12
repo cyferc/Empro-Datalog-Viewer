@@ -44,9 +44,9 @@ WidgetDatalogViewControl::WidgetDatalogViewControl(QWidget *parent,
 
     horizontalAxis = new HorizontalAxis();
     QObject::connect(this,
-                     SIGNAL(setXAxisBounds(double, double)),
+                     &WidgetDatalogViewControl::setXAxisBounds,
                      horizontalAxis,
-                     SLOT(setAxisBounds(double,double)));
+                     &HorizontalAxis::setAxisBounds);
 
     QGridLayout *contentLayout = new QGridLayout(this);
     contentLayout->setSpacing(0);
@@ -79,44 +79,44 @@ void WidgetDatalogViewControl::addPlot()
     splitterPlots->addWidget(plot);
 
     QObject::connect(this,
-                     SIGNAL(signalShowPoints(bool)),
+                     &WidgetDatalogViewControl::signalShowPoints,
                      plot,
-                     SLOT(setDrawPoints(bool)));
+                     &PlotDatalog::setDrawPoints);
 
     QObject::connect(this,
-                     SIGNAL(signalShowCurrentValueMarkers(bool)),
+                     &WidgetDatalogViewControl::signalShowCurrentValueMarkers,
                      plot,
-                     SLOT(setDrawCurrentValueMarkers(bool)));
+                     &PlotDatalog::setDrawCurrentValueMarkers);
 
     QObject::connect(this,
-                     SIGNAL(signalSetAntialiasing(bool)),
+                     &WidgetDatalogViewControl::signalSetAntialiasing,
                      plot,
-                     SLOT(setAntiAliasing(bool)));
+                     &PlotDatalog::setAntiAliasing);
 
     QObject::connect(plot,
-                     SIGNAL(mousePressEventSignal(QMouseEvent*)),
+                     &PlotDatalog::mousePressEventSignal,
                      this,
-                     SLOT(plotMousePressEvent(QMouseEvent*)));
+                     &WidgetDatalogViewControl::plotMousePressEvent);
 
     QObject::connect(plot,
-                     SIGNAL(mouseMoveEventSignal(QMouseEvent*)),
+                     &PlotDatalog::mouseMoveEventSignal,
                      this,
-                     SLOT(plotMouseMoveEvent(QMouseEvent*)));
+                     &WidgetDatalogViewControl::plotMouseMoveEvent);
 
     QObject::connect(plot,
-                     SIGNAL(wheelEventSignal(QWheelEvent*)),
+                     &PlotDatalog::wheelEventSignal,
                      this,
-                     SLOT(plotWheelEvent(QWheelEvent*)));
+                     &WidgetDatalogViewControl::plotWheelEvent);
 
     QObject::connect(plot,
-                     SIGNAL(resizeEventSignal(QResizeEvent*)),
+                     &PlotDatalog::resizeEventSignal,
                      this,
-                     SLOT(plotResizeEvent(QResizeEvent*)));
+                     &WidgetDatalogViewControl::plotResizeEvent);
 
     QObject::connect(this,
-                     SIGNAL(repaintPlots()),
+                     &WidgetDatalogViewControl::repaintPlots,
                      plot,
-                     SLOT(repaint()));
+                     static_cast<void (PlotDatalog::*)()>(&PlotDatalog::repaint));
 }
 
 void WidgetDatalogViewControl::evenPlotSpacing()
@@ -498,9 +498,9 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
 
         // We only change the x axis bounds
         QObject::connect(this,
-                         SIGNAL(setXAxisBounds(double, double)),
+                         &WidgetDatalogViewControl::setXAxisBounds,
                          plist,
-                         SLOT(setAxisBoundsX(double,double)));
+                         &PointList::setAxisBoundsX);
 
         plist->setName(array[col]);
         plist->setColor(QColor(Helpers::randInt(lineColorBetweenA, lineColorBetweenB),
