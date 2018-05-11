@@ -20,7 +20,6 @@ I started this project to quickly view .csv data logs that I saved from my home 
 
 ### Todo:
 - add "do not show again" option to error dialog when opening file
-- convert PlotDatalog::listPlots and PointList::listPoints to std::vector
 - render flat line data series
 - y-axis tick labels
 - semi-transparent background for text in plot
