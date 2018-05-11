@@ -8,7 +8,7 @@
 #include <cinttypes>
 #include "helpers.h"
 
-PlotDatalog::PlotDatalog(QWidget *parent) : QWidget(parent)
+PlotDatalog::PlotDatalog(QWidget *pParent) : QWidget(pParent)
 {
     setMouseTracking(true);
 
@@ -27,46 +27,47 @@ PlotDatalog::~PlotDatalog()
 
 void PlotDatalog::addPointList(PointList* pList)
 {
-    listPlots.append(pList);
+    m_PlotsVec.push_back(pList);
 }
 
 void PlotDatalog::setDrawPoints(bool p)
 {
-    drawPoints = p;
+    m_DrawPoints = p;
     this->repaint();
 }
 
 void PlotDatalog::setDrawCurrentValueMarkers(bool draw)
 {
-    drawCurrentValueMarkers = draw;
+    m_DrawCurrentValueMarkers = draw;
     this->repaint();
 }
 
 void PlotDatalog::setAntiAliasing(bool p)
 {
-    antiAliasing = p;
+    m_AntiAliasing = p;
     this->repaint();
 }
 
 void PlotDatalog::clearPointLists()
 {
-    listPlots.clear();
+    // TODO: delete heap memory here?
+    m_PlotsVec.clear();
 }
 
 void PlotDatalog::dataPointMapToScreenX(double &xValue, double xAxisBoundMin, double xAxisBoundMax)
 {
     xValue = Helpers::LinearInterpolation(xAxisBoundMin,
-                                          marginLeft,
+                                          m_MarginLeft,
                                           xAxisBoundMax,
-                                          width() - marginRight, xValue);
+                                          width() - m_MarginRight, xValue);
 }
 
 void PlotDatalog::dataPointMapToScreenY(double &yValue, double yAxisBoundMin, double yAxisBoundMax)
 {
     yValue = Helpers::LinearInterpolation(yAxisBoundMin,
-                                          marginBottom + lineWidth,
+                                          m_MarginBottom + cLineWidth,
                                           yAxisBoundMax,
-                                          height() - marginTop - lineWidth, yValue);
+                                          height() - m_MarginTop - cLineWidth, yValue);
 }
 
 void PlotDatalog::contextMenuEvent(QContextMenuEvent *event)
@@ -74,28 +75,28 @@ void PlotDatalog::contextMenuEvent(QContextMenuEvent *event)
     event->accept();
 }
 
-void PlotDatalog::mousePressEvent(QMouseEvent *event)
+void PlotDatalog::mousePressEvent(QMouseEvent *pEvent)
 {
-    emit mousePressEventSignal(event);
-    event->accept();
+    emit mousePressEventSignal(pEvent);
+    pEvent->accept();
 }
 
-void PlotDatalog::mouseMoveEvent(QMouseEvent *event)
+void PlotDatalog::mouseMoveEvent(QMouseEvent *pEvent)
 {
-    emit mouseMoveEventSignal(event);
-    event->accept();
+    emit mouseMoveEventSignal(pEvent);
+    pEvent->accept();
 }
 
-void PlotDatalog::wheelEvent(QWheelEvent *event)
+void PlotDatalog::wheelEvent(QWheelEvent *pEvent)
 {
-    emit wheelEventSignal(event);
-    event->accept();
+    emit wheelEventSignal(pEvent);
+    pEvent->accept();
 }
 
-void PlotDatalog::resizeEvent(QResizeEvent* event)
+void PlotDatalog::resizeEvent(QResizeEvent* pEvent)
 {
-    emit resizeEventSignal(event);
-    event->accept();
+    emit resizeEventSignal(pEvent);
+    pEvent->accept();
 }
 
 void PlotDatalog::paintEvent(QPaintEvent *)
@@ -110,27 +111,28 @@ void PlotDatalog::paintEvent(QPaintEvent *)
     QPoint mousePosition = this->mapFromGlobal(QCursor::pos());
 
     QPainter painter(this);
-    painter.setClipRect(QRect(marginLeft, marginTop, width() - marginLeft - marginRight, height() - marginBottom - marginTop), Qt::ReplaceClip);
-    painter.setRenderHint(QPainter::Antialiasing, antiAliasing);
+    painter.setClipRect(QRect(m_MarginLeft, m_MarginTop, width() - m_MarginLeft - m_MarginRight, height() - m_MarginBottom - m_MarginTop), Qt::ReplaceClip);
+    painter.setRenderHint(QPainter::Antialiasing, m_AntiAliasing);
 
     // Translate so bottom left is (0,0), up and right is positive
     painter.scale(1, -1);
     painter.translate(0, -height());
 
     pen.setCosmetic(true);
-    pen.setWidth(lineWidth);
+    pen.setWidth(cLineWidth);
     pen.setColor(QColor(200,200,200));
     painter.setPen(pen);
 
-    for (int plot = 0; plot < listPlots.length(); plot++)
+    int plotsVecSize = static_cast<int>(m_PlotsVec.size());
+    for (int plot = 0; plot < plotsVecSize; plot++)
     {
-        PointList *p = listPlots.value(plot);
+        PointList *p = m_PlotsVec[plot];
 
         // Set line style for each plot
         pen.setColor(p->getColor());
         painter.setPen(pen);
 
-        if (p->length() > 0)
+        if (p->size() > 0)
         {
             ///////////////////////////////////////
             /// First sample
@@ -140,10 +142,10 @@ void PlotDatalog::paintEvent(QPaintEvent *)
             dataPointMapToScreenX(previousPoint.rx(), p->getAxisBoundsMinX(), p->getAxisBoundsMaxX());
             dataPointMapToScreenY(previousPoint.ry(), p->getAxisBoundsMinY(), p->getAxisBoundsMaxY());
 
-            if (drawPoints)
+            if (m_DrawPoints)
             {
                 // Set point style for each plot
-                pen.setWidth(pointSize);
+                pen.setWidth(cPointSize);
                 painter.setPen(pen);
 
                 painter.drawPoint(previousPoint);
@@ -151,7 +153,7 @@ void PlotDatalog::paintEvent(QPaintEvent *)
                 pointsDrawnCount++;
 
                 // Back to line style
-                pen.setWidth(lineWidth);
+                pen.setWidth(cLineWidth);
                 painter.setPen(pen);
             }
 
@@ -188,10 +190,10 @@ void PlotDatalog::paintEvent(QPaintEvent *)
 
                 linesDrawnCount++;
 
-                if (drawPoints)
+                if (m_DrawPoints)
                 {
                     // Set point style for each plot
-                    pen.setWidth(pointSize);
+                    pen.setWidth(cPointSize);
                     painter.setPen(pen);
 
                     painter.drawPoint(currentPoint);
@@ -199,7 +201,7 @@ void PlotDatalog::paintEvent(QPaintEvent *)
                     pointsDrawnCount++;
 
                     // Back to line style
-                    pen.setWidth(lineWidth);
+                    pen.setWidth(cLineWidth);
                     painter.setPen(pen);
                 }
 
@@ -228,13 +230,14 @@ void PlotDatalog::paintEvent(QPaintEvent *)
 
     painter.setClipping(false);
 
-    if (drawCurrentValueMarkers)
+    if (m_DrawCurrentValueMarkers)
     {
         // Draw horizontal line at current point under mouse
-        for (int plot = 0; plot < listPlots.length(); plot++)
+        int plotsVecSize = static_cast<int>(m_PlotsVec.size());
+        for (int plot = 0; plot < plotsVecSize; plot++)
         {
-            PointList *p = listPlots.value(plot);
-            pen.setWidth(currentValueMarkerLineThickness);
+            PointList *p = m_PlotsVec[plot];
+            pen.setWidth(cCurrentValueMarkerLineThickness);
             pen.setColor(p->getColor());
             painter.setPen(pen);
 
@@ -243,8 +246,8 @@ void PlotDatalog::paintEvent(QPaintEvent *)
             dataPointMapToScreenY(itemClosestToMouseCoordY, p->getAxisBoundsMinY(), p->getAxisBoundsMaxY());
 
             // Draw the line
-            painter.drawLine(itemClosestToMouseCoordX - currentValueMarkerLineHalfLength, itemClosestToMouseCoordY,     // from (x1, y1)
-                             itemClosestToMouseCoordX + currentValueMarkerLineHalfLength, itemClosestToMouseCoordY);    // to   (x2, y2)
+            painter.drawLine(itemClosestToMouseCoordX - cCurrentValueMarkerLineHalfLength, itemClosestToMouseCoordY,     // from (x1, y1)
+                             itemClosestToMouseCoordX + cCurrentValueMarkerLineHalfLength, itemClosestToMouseCoordY);    // to   (x2, y2)
         }
     }
 
@@ -258,12 +261,13 @@ void PlotDatalog::paintEvent(QPaintEvent *)
     // Draw text
     painter.resetTransform();
 
-    int textHeight = 10 + marginTop;
+    int textHeight = 10 + m_MarginTop;
     double currentYaxisX = 0;
-    for (int plot = 0; plot < listPlots.length(); plot++)
+
+    for (int plot = 0; plot < plotsVecSize; plot++)
     {
         QString textNumber;
-        PointList *p = listPlots.value(plot);
+        PointList *p = m_PlotsVec[plot];
 
         if (plot == 0)
         {

@@ -13,54 +13,54 @@
 #include <QCheckBox>
 
 
-WidgetDatalogViewControl::WidgetDatalogViewControl(QWidget *parent,
-                                                   MainWindow* mainWindow,
-                                                   QDockWidget *dockWidgetChannelList,
-                                                   QDockWidget *dockWidgetSelection) :
-    QWidget(parent),
-    _mainWindow(mainWindow)
+WidgetDatalogViewControl::WidgetDatalogViewControl(QWidget *pParent,
+                                                   MainWindow* pMainWindow,
+                                                   QDockWidget *pDockWidgetChannelList,
+                                                   QDockWidget */*pDockWidgetSelection*/) :
+    QWidget(pParent),
+    m_pMainWindow(pMainWindow)
 {
-    tableChannelList = new QTableWidget(this);
-    tableChannelList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    tableChannelList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    tableChannelList->setSelectionMode(QAbstractItemView::NoSelection);
-    tableChannelList->setAlternatingRowColors(true);
-    tableChannelList->verticalHeader()->hide();
-    tableChannelList->verticalHeader()->setDefaultSectionSize(15);
-    tableChannelList->setColumnCount(4);
-    tableChannelList->hide();
+    m_pTableChannelList = new QTableWidget(this);
+    m_pTableChannelList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    m_pTableChannelList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    m_pTableChannelList->setSelectionMode(QAbstractItemView::NoSelection);
+    m_pTableChannelList->setAlternatingRowColors(true);
+    m_pTableChannelList->verticalHeader()->hide();
+    m_pTableChannelList->verticalHeader()->setDefaultSectionSize(15);
+    m_pTableChannelList->setColumnCount(4);
+    m_pTableChannelList->hide();
 
-    tableChannelList->setHorizontalHeaderItem(0, new QTableWidgetItem("Channel"));
-    tableChannelList->setColumnWidth(0, 100);
-    tableChannelList->setHorizontalHeaderItem(1, new QTableWidgetItem("Min"));
-    tableChannelList->setColumnWidth(1, 50);
-    tableChannelList->setHorizontalHeaderItem(2, new QTableWidgetItem("Value"));
-    tableChannelList->setColumnWidth(2, 50);
-    tableChannelList->setHorizontalHeaderItem(3, new QTableWidgetItem("Max"));
-    tableChannelList->setColumnWidth(3, 50);
+    m_pTableChannelList->setHorizontalHeaderItem(0, new QTableWidgetItem("Channel"));
+    m_pTableChannelList->setColumnWidth(0, 100);
+    m_pTableChannelList->setHorizontalHeaderItem(1, new QTableWidgetItem("Min"));
+    m_pTableChannelList->setColumnWidth(1, 50);
+    m_pTableChannelList->setHorizontalHeaderItem(2, new QTableWidgetItem("Value"));
+    m_pTableChannelList->setColumnWidth(2, 50);
+    m_pTableChannelList->setHorizontalHeaderItem(3, new QTableWidgetItem("Max"));
+    m_pTableChannelList->setColumnWidth(3, 50);
 
-    dockWidgetChannelList->setWidget(tableChannelList);
+    pDockWidgetChannelList->setWidget(m_pTableChannelList);
 
-    splitterPlots = new QSplitter;
-    splitterPlots->setOrientation(Qt::Vertical);
-    splitterPlots->setHandleWidth(3);
-    splitterPlots->setStyleSheet("QSplitter::handle { background-color: white };");
+    m_pSplitterPlots = new QSplitter;
+    m_pSplitterPlots->setOrientation(Qt::Vertical);
+    m_pSplitterPlots->setHandleWidth(3);
+    m_pSplitterPlots->setStyleSheet("QSplitter::handle { background-color: white };");
 
-    horizontalAxis = new HorizontalAxis();
+    m_pHorizontalAxis = new HorizontalAxis();
     QObject::connect(this,
                      &WidgetDatalogViewControl::setXAxisBounds,
-                     horizontalAxis,
+                     m_pHorizontalAxis,
                      &HorizontalAxis::setAxisBounds);
 
     QGridLayout *contentLayout = new QGridLayout(this);
     contentLayout->setSpacing(0);
     contentLayout->setContentsMargins(0, 0, 0, 0);
 
-    contentLayout->addWidget(splitterPlots);
-    contentLayout->addWidget(horizontalAxis);
+    contentLayout->addWidget(m_pSplitterPlots);
+    contentLayout->addWidget(m_pHorizontalAxis);
 
     //////// Right Click Menu ////////
-    plotContextMenu = new QMenu(this);
+    m_pPlotContextMenu = new QMenu(this);
     //plotContextMenu->addAction(plotContextMenuStrChooseChannels);
 
     addPlot();
@@ -69,18 +69,18 @@ WidgetDatalogViewControl::WidgetDatalogViewControl(QWidget *parent,
 void WidgetDatalogViewControl::addPlot()
 {
     PlotDatalog *plot = new PlotDatalog;
-    plot->setAntiAliasing(_antiAliasing);
-    plot->setDrawCurrentValueMarkers(_showCurrentValueMarkers);
-    plot->setDrawPoints(_showPoints);
+    plot->setAntiAliasing(m_AntiAliasing);
+    plot->setDrawCurrentValueMarkers(m_ShowCurrentValueMarkers);
+    plot->setDrawPoints(m_ShowPoints);
 
     // Set vector sizes
     plot->vecChannelsDraw.clear();
-    plot->vecChannelsDraw.resize(listOfPointLists.count());
+    plot->vecChannelsDraw.resize(m_VecOfPointLists.size());
     plot->vecChannelsYAxis.clear();
-    plot->vecChannelsYAxis.resize(listOfPointLists.count());
+    plot->vecChannelsYAxis.resize(m_VecOfPointLists.size());
 
 
-    splitterPlots->addWidget(plot);
+    m_pSplitterPlots->addWidget(plot);
 
     QObject::connect(this,
                      &WidgetDatalogViewControl::signalShowPoints,
@@ -125,39 +125,39 @@ void WidgetDatalogViewControl::addPlot()
 
 void WidgetDatalogViewControl::evenPlotSpacing()
 {
-    int vertical_size = splitterPlots->height() / splitterPlots->count();
+    int vertical_size = m_pSplitterPlots->height() / m_pSplitterPlots->count();
 
     QList<int> sizeList;
-    for (int index = 0; index < splitterPlots->count(); index++)
+    for (int index = 0; index < m_pSplitterPlots->count(); index++)
     {
         sizeList.append(vertical_size);
     }
 
-    splitterPlots->setSizes(sizeList);
+    m_pSplitterPlots->setSizes(sizeList);
 }
 
-void WidgetDatalogViewControl::plotResizeEvent(QResizeEvent*)
+void WidgetDatalogViewControl::plotResizeEvent(QResizeEvent* /*pEvent*/)
 {
     emit repaintPlots();
 }
 
-void WidgetDatalogViewControl::plotMouseMoveEvent(QMouseEvent *event)
+void WidgetDatalogViewControl::plotMouseMoveEvent(QMouseEvent *pEvent)
 {
-    if (event->buttons() & Qt::LeftButton)
+    if (pEvent->buttons() & Qt::LeftButton)
     {
-        float dx = (event->x() - lastMousePos.x()) * (originalXAxisBoundMax - originalXAxisBoundMin);
-        dx = dx / splitterPlots->width();
-        xAxisBoundMin = originalXAxisBoundMin - dx;
-        xAxisBoundMax = originalXAxisBoundMax - dx;
+        float dx = (pEvent->x() - m_LastMousePos.x()) * (m_OriginalXAxisBoundMax - m_OriginalXAxisBoundMin);
+        dx = dx / m_pSplitterPlots->width();
+        m_XAxisBoundMin = m_OriginalXAxisBoundMin - dx;
+        m_XAxisBoundMax = m_OriginalXAxisBoundMax - dx;
 
-        emit setXAxisBounds(xAxisBoundMin, xAxisBoundMax);
+        emit setXAxisBounds(m_XAxisBoundMin, m_XAxisBoundMax);
     }
     emit repaintPlots();
 }
 
-void WidgetDatalogViewControl::plotWheelEvent(QWheelEvent *event)
+void WidgetDatalogViewControl::plotWheelEvent(QWheelEvent *pEvent)
 {
-    double amount = (event->angleDelta().y() / 180.0);
+    double amount = (pEvent->angleDelta().y() / 180.0);
     zoom(amount);
 }
 
@@ -173,23 +173,23 @@ void WidgetDatalogViewControl::zoomOut()
 
 void WidgetDatalogViewControl::zoom(double amount)
 {
-    double temp_xAxisBoundMin = xAxisBoundMin - amount;
-    double temp_xAxisBoundMax = xAxisBoundMax + amount;
+    double temp_xAxisBoundMin = m_XAxisBoundMin - amount;
+    double temp_xAxisBoundMax = m_XAxisBoundMax + amount;
 
     if (temp_xAxisBoundMin > temp_xAxisBoundMax)
     {
         return;
     }
 
-    xAxisBoundMin = temp_xAxisBoundMin;
-    xAxisBoundMax = temp_xAxisBoundMax;
+    m_XAxisBoundMin = temp_xAxisBoundMin;
+    m_XAxisBoundMax = temp_xAxisBoundMax;
 
     // Send to all plots
-    emit setXAxisBounds(xAxisBoundMin, xAxisBoundMax);
+    emit setXAxisBounds(m_XAxisBoundMin, m_XAxisBoundMax);
     emit repaintPlots();
 }
 
-void WidgetDatalogViewControl::plotMousePressEvent(QMouseEvent *event)
+void WidgetDatalogViewControl::plotMousePressEvent(QMouseEvent *pEvent)
 {
     //PlotDatalog* senderPlot = qobject_cast<PlotDatalog*>(sender());
 
@@ -207,65 +207,66 @@ void WidgetDatalogViewControl::plotMousePressEvent(QMouseEvent *event)
     //}
     //}
     //else
-    if (event->button() == Qt::LeftButton)
+    if (pEvent->button() == Qt::LeftButton)
     {
-        lastMousePos = event->pos();
-        originalXAxisBoundMin = xAxisBoundMin;
-        originalXAxisBoundMax = xAxisBoundMax;
+        m_LastMousePos = pEvent->pos();
+        m_OriginalXAxisBoundMin = m_XAxisBoundMin;
+        m_OriginalXAxisBoundMax = m_XAxisBoundMax;
     }
 }
 
 void WidgetDatalogViewControl::setupClicked()
 {
-    DialogPlotChannelChoose dialog(listOfPointLists, splitterPlots, this);
+    DialogPlotChannelChoose dialog(m_VecOfPointLists, m_pSplitterPlots, this);
     dialog.exec();
 }
 
 void WidgetDatalogViewControl::deleteBottomPlot()
 {
-    if (splitterPlots->count() > 1)
+    if (m_pSplitterPlots->count() > 1)
     {
-        splitterPlots->widget(splitterPlots->count() - 1)->deleteLater();
+        m_pSplitterPlots->widget(m_pSplitterPlots->count() - 1)->deleteLater();
     }
 }
 
 void WidgetDatalogViewControl::addPlointListsToChannelList()
 {
-    tableChannelList->clearContents();
-    tableChannelList->setRowCount(listOfPointLists.count());
+    m_pTableChannelList->clearContents();
+    m_pTableChannelList->setRowCount(m_VecOfPointLists.size());
 
     // Add channels to table
-    for (int channel = 0; channel < listOfPointLists.count(); channel++)
+    int vecOfPointListsSize = static_cast<int>(m_VecOfPointLists.size());
+    for (int channel = 0; channel < vecOfPointListsSize; channel++)
     {
-        PointList *pList = listOfPointLists.at(channel);
+        PointList *pList = m_VecOfPointLists[channel];
 
         QTableWidgetItem *itemName = new QTableWidgetItem(pList->getName());
         itemName->setFlags(itemName->flags() ^ Qt::ItemIsEditable);
 
-        tableChannelList->setItem(channel, 0, itemName);
+        m_pTableChannelList->setItem(channel, 0, itemName);
 
         QTableWidgetItem *itemMin = new QTableWidgetItem(QString::number(pList->getMinY()));
         itemMin->setFlags(itemMin->flags() ^ Qt::ItemIsEditable);
 
-        tableChannelList->setItem(channel, 1, itemMin);
+        m_pTableChannelList->setItem(channel, 1, itemMin);
 
         QTableWidgetItem *itemMax = new QTableWidgetItem(QString::number(pList->getMaxY()));
         itemMax->setFlags(itemMax->flags() ^ Qt::ItemIsEditable);
 
-        tableChannelList->setItem(channel, 3, itemMax);
+        m_pTableChannelList->setItem(channel, 3, itemMax);
     }
 }
 
 void WidgetDatalogViewControl::resetPlotVectorSizes()
 {
-    for (int plotIndex = 0; plotIndex < splitterPlots->count(); plotIndex++)
+    for (int plotIndex = 0; plotIndex < m_pSplitterPlots->count(); plotIndex++)
     {
-        PlotDatalog* plot = qobject_cast<PlotDatalog *>(splitterPlots->children().at(plotIndex));
+        PlotDatalog* plot = qobject_cast<PlotDatalog *>(m_pSplitterPlots->children().at(plotIndex));
         plot->vecChannelsDraw.clear();
-        plot->vecChannelsDraw.resize(listOfPointLists.count());
+        plot->vecChannelsDraw.resize(m_VecOfPointLists.size());
 
         plot->vecChannelsYAxis.clear();
-        plot->vecChannelsYAxis.resize(listOfPointLists.count());
+        plot->vecChannelsYAxis.resize(m_VecOfPointLists.size());
     }
 }
 
@@ -289,11 +290,11 @@ void WidgetDatalogViewControl::openDatalogClicked()
 
     if (fileName.endsWith(".csv", Qt::CaseInsensitive))
     {
-        fileType = FileType_CSV;
+        m_FileType = eFileType::CSV;
     }
     else if (fileName.endsWith(".msl", Qt::CaseInsensitive))
     {
-        fileType = FileType_Megasquirt_MSL;
+        m_FileType = eFileType::Megasquirt_MSL;
     }
     else
     {
@@ -342,28 +343,29 @@ void WidgetDatalogViewControl::openDatalogClicked()
     }
 
     // Set initial axis bounds
-    for (int i = 0; i < listOfPointLists.count(); i++)
+    int vecOfPointListsSize = static_cast<int>(m_VecOfPointLists.size());
+    for (int i = 0; i < vecOfPointListsSize; i++)
     {
         if (i == 0)
         {
             /// Initial X axis bounds
-            xAxisBoundMin = listOfPointLists.at(0)->getMinX();
+            m_XAxisBoundMin = m_VecOfPointLists[0]->getMinX();
 
-            if (initialXAxisBoundMax < listOfPointLists.at(0)->getMaxX())
+            if (m_InitialXAxisBoundMax < m_VecOfPointLists[0]->getMaxX())
             {
-                xAxisBoundMax = xAxisBoundMin + initialXAxisBoundMax;
+                m_XAxisBoundMax = m_XAxisBoundMin + m_InitialXAxisBoundMax;
             }
             else
             {
-                xAxisBoundMax = listOfPointLists.at(0)->getMaxX();
+                m_XAxisBoundMax = m_VecOfPointLists[0]->getMaxX();
             }
 
-            emit setXAxisBounds(xAxisBoundMin, xAxisBoundMax);
+            emit setXAxisBounds(m_XAxisBoundMin, m_XAxisBoundMax);
         }
 
         /// Initial Y axis bounds
-        listOfPointLists.at(i)->setAxisBoundsY(listOfPointLists.at(i)->getMinY(),
-                                               listOfPointLists.at(i)->getMaxY());
+        m_VecOfPointLists[i]->setAxisBoundsY(m_VecOfPointLists[i]->getMinY(),
+                                               m_VecOfPointLists[i]->getMaxY());
     }
 
     addPlointListsToChannelList();
@@ -379,18 +381,18 @@ void WidgetDatalogViewControl::openDatalogClicked()
         fileNameNoDir.prepend(*i);
     }
 
-    _mainWindow->SetWindowTitle(fileNameNoDir);
+    m_pMainWindow->SetWindowTitle(fileNameNoDir);
 }
 
 void WidgetDatalogViewControl::deleteAllIn_ListOfPointLists()
 {
     // Delete dynamic allocated memory in container
-    qDeleteAll(listOfPointLists);
-    listOfPointLists.clear();
+    qDeleteAll(m_VecOfPointLists);
+    m_VecOfPointLists.clear();
 
-    for (int i = 0; i < splitterPlots->count(); ++i)
+    for (int i = 0; i < m_pSplitterPlots->count(); ++i)
     {
-        PlotDatalog* plot = qobject_cast<PlotDatalog *>(splitterPlots->children().at(i));
+        PlotDatalog* plot = qobject_cast<PlotDatalog *>(m_pSplitterPlots->children().at(i));
         plot->clearPointLists();
     }
 
@@ -404,21 +406,21 @@ bool WidgetDatalogViewControl::processDatalogLine(QByteArray line, int lineNumbe
     int currentCol = 0;
     QList<QByteArray> array;
 
-    if (fileType == FileType_CSV)
+    if (m_FileType == eFileType::CSV)
     {
         array = line.split(',');
     }
-    else if (fileType == FileType_Megasquirt_MSL)
+    else if (m_FileType == eFileType::Megasquirt_MSL)
     {
         array = line.split('\t');
     }
 
-    double timeValue = array[timeColumn].toDouble(&conversionOK);
+    double timeValue = array[m_TimeColumn].toDouble(&conversionOK);
 
     if (!conversionOK)
     {
         QString errorText("Error converting time value to double, line ");
-        errorText.append(QString::number(lineNumber)).append(", column ").append(QString::number(timeColumn + 1)).append(".");
+        errorText.append(QString::number(lineNumber)).append(", column ").append(QString::number(m_TimeColumn + 1)).append(".");
 
         qDebug() << errorText;
         QMessageBox::warning(this, "Error", errorText, QMessageBox::Ok);
@@ -427,12 +429,12 @@ bool WidgetDatalogViewControl::processDatalogLine(QByteArray line, int lineNumbe
 
     for (int col = 0; col < array.length(); col++)
     {
-        if (col == timeColumn)
+        if (col == m_TimeColumn)
         {
             continue;
         }
 
-        PointList *pList = listOfPointLists.value(currentCol);
+        PointList *pList = m_VecOfPointLists[currentCol];
 
         double value = array[col].toDouble(&conversionOK);
 
@@ -468,11 +470,11 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
 
     QList<QByteArray> array;
 
-    if (fileType == FileType_CSV)
+    if (m_FileType == eFileType::CSV)
     {
         array = line.split(',');
     }
-    else if (fileType == FileType_Megasquirt_MSL)
+    else if (m_FileType == eFileType::Megasquirt_MSL)
     {
         array = line.split('\t');
     }
@@ -486,7 +488,7 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
 
     // show dialog
     bool ok;
-    timeColumnName = QInputDialog::getItem(this, tr("Time Axis Selection"),
+    m_TimeColumnName = QInputDialog::getItem(this, tr("Time Axis Selection"),
                                            tr("Select time column:"), columnNames, 0, false, &ok);
 
     // if cancel pressed
@@ -496,7 +498,7 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
     }
 
     // if something else went wrong
-    if (timeColumnName.isEmpty())
+    if (m_TimeColumnName.isEmpty())
     {
         QMessageBox::warning(this, "Error", "Time column was not found in datalog file", QMessageBox::Ok);
         return false;
@@ -505,9 +507,9 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
     for (int col = 0; col < array.length(); col++)
     {
         // get time column number
-        if (array[col] == timeColumnName)
+        if (array[col] == m_TimeColumnName)
         {
-            timeColumn      = col;
+            m_TimeColumn      = col;
             timeColumnFound = true;
             continue;
         }
@@ -521,11 +523,11 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
                          &PointList::setAxisBoundsX);
 
         plist->setName(array[col]);
-        plist->setColor(QColor(Helpers::randInt(lineColorBetweenA, lineColorBetweenB),
-                               Helpers::randInt(lineColorBetweenA, lineColorBetweenB),
-                               Helpers::randInt(lineColorBetweenA, lineColorBetweenB)));
+        plist->setColor(QColor(Helpers::randInt(cLineColorBetweenA, cLineColorBetweenB),
+                               Helpers::randInt(cLineColorBetweenA, cLineColorBetweenB),
+                               Helpers::randInt(cLineColorBetweenA, cLineColorBetweenB)));
 
-        listOfPointLists.append(plist);
+        m_VecOfPointLists.push_back(plist);
     }
 
     // Check if time column was found
@@ -540,18 +542,18 @@ bool WidgetDatalogViewControl::processDatalogFirstLine(QByteArray line)
 
 void WidgetDatalogViewControl::showPoints(bool show)
 {
-    _showPoints = show;
+    m_ShowPoints = show;
     emit this->signalShowPoints(show);
 }
 
 void WidgetDatalogViewControl::showCurrentValueMarkers(bool show)
 {
-    _showCurrentValueMarkers = show;
+    m_ShowCurrentValueMarkers = show;
     emit this->signalShowCurrentValueMarkers(show);
 }
 
 void WidgetDatalogViewControl::setAntialiasing(bool show)
 {
-    _antiAliasing = show;
+    m_AntiAliasing = show;
     emit this->signalSetAntialiasing(show);
 }

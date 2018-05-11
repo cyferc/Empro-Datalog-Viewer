@@ -4,43 +4,42 @@
 
 PointList::PointList()
 {
-    minX        = DBL_MAX;
-    maxX        = DBL_MIN;
-    minY        = DBL_MAX;
-    maxY        = DBL_MIN;
-    name        = "";
-    units       = "";
-    lineColor   = Qt::white;
+    m_MinX        = DBL_MAX;
+    m_MaxX        = DBL_MIN;
+    m_MinY        = DBL_MAX;
+    m_MaxY        = DBL_MIN;
+    m_Name        = "";
+    m_Units       = "";
+    m_LineColor   = Qt::white;
 }
 
 PointList::~PointList()
 {
-    listPoints.clear();
 }
 
 void PointList::setName(QString newName)
 {
-    name = newName;
+    m_Name = newName;
 }
 
 void PointList::setUnits(QString newUnits)
 {
-    units = newUnits;
+    m_Units = newUnits;
 }
 
 void PointList::setColor(QColor color)
 {
-    lineColor = color;
+    m_LineColor = color;
 }
 
 void PointList::setAxisBoundsX(double min, double max)
 {
-    axisBoundMinX = min;
-    axisBoundMaxX = max;
+    m_AxisBoundMinX = min;
+    m_AxisBoundMaxX = max;
 
     // Binary search to find the min and max indices
-    axisBoundMinX_index = binarySearchX(axisBoundMinX);
-    axisBoundMaxX_index = binarySearchX(axisBoundMaxX);
+    m_AxisBoundMinX_index = binarySearchX(m_AxisBoundMinX);
+    m_AxisBoundMaxX_index = binarySearchX(m_AxisBoundMaxX);
 
     /*
     // Linear Search
@@ -78,21 +77,21 @@ void PointList::setAxisBoundsX(double min, double max)
 int PointList::binarySearchX(double value)
 {
     int left = 0;
-    int right = listPoints.count() - 1;
+    int right = m_PointsVec.size() - 1;
 
     while (left <= right)
     {
         int middle = (left + right) / 2;
 
         // If we're at the last index
-        if (middle == (listPoints.count() - 1))
+        if (middle == (static_cast<int>(m_PointsVec.size()) - 1))
         {
             return middle + 1; // Return + 1 so that the rendered can draw the last line between points, fix this stupidity?
         }
         // If value is between middle and middle + 1, we found the index
-        else if ((listPoints.at(middle).x() < value) && (value < listPoints.at(middle + 1).x()))
+        else if ((m_PointsVec[middle].x() < value) && (value < m_PointsVec[middle + 1].x()))
             return middle + 1;  // Return + 1 so that the rendered can draw the last line between points, fix this stupidity?
-        else if (listPoints.at(middle).x() > value)
+        else if (m_PointsVec[middle].x() > value)
             right = middle - 1;
         else
             left = middle + 1;
@@ -102,108 +101,108 @@ int PointList::binarySearchX(double value)
 
 void PointList::setAxisBoundsY(double min, double max)
 {
-    axisBoundMinY = min;
-    axisBoundMaxY = max;
+    m_AxisBoundMinY = min;
+    m_AxisBoundMaxY = max;
 }
 
 double PointList::getAxisBoundsMinY()
 {
-    return axisBoundMinY;
+    return m_AxisBoundMinY;
 }
 
 double PointList::getAxisBoundsMaxY()
 {
-    return axisBoundMaxY;
+    return m_AxisBoundMaxY;
 }
 
 double PointList::getAxisBoundsMinX()
 {
-    return axisBoundMinX;
+    return m_AxisBoundMinX;
 }
 
 double PointList::getAxisBoundsMaxX()
 {
-    return axisBoundMaxX;
+    return m_AxisBoundMaxX;
 }
 
 double PointList::getAxisBoundsMinX_index()
 {
-    return axisBoundMinX_index;
+    return m_AxisBoundMinX_index;
 }
 
 double PointList::getAxisBoundsMaxX_index()
 {
-    return axisBoundMaxX_index;
+    return m_AxisBoundMaxX_index;
 }
 
 QString PointList::getName()
 {
-    return name;
+    return m_Name;
 }
 
 QString PointList::getUnits()
 {
-    return units;
+    return m_Units;
 }
 
 QColor PointList::getColor()
 {
-    return lineColor;
+    return m_LineColor;
 }
 
 void PointList::append(const QPointF& point)
 {
-    listPoints.append(point);
+    m_PointsVec.push_back(point);
 
     /// X Time
-    if (point.x() > maxX)
+    if (point.x() > m_MaxX)
     {
-        maxX = point.x();
+        m_MaxX = point.x();
     }
 
-    if (point.x() < minX)
+    if (point.x() < m_MinX)
     {
-        minX = point.x();
+        m_MinX = point.x();
     }
 
     /// Y Value
-    if (point.y() > maxY)
+    if (point.y() > m_MaxY)
     {
-        maxY = point.y();
+        m_MaxY = point.y();
     }
 
-    if (point.y() < minY)
+    if (point.y() < m_MinY)
     {
-        minY = point.y();
+        m_MinY = point.y();
     }
 }
 
-int PointList::length()
+int PointList::size()
 {
-    return listPoints.length();
+    return m_PointsVec.size();
 }
 
 float PointList::getMaxX()
 {
-    return this->maxX;
+    return this->m_MaxX;
 }
 
 float PointList::getMinX()
 {
-    return this->minX;
+    return this->m_MinX;
 }
 
 float PointList::getMaxY()
 {
-    return this->maxY;
+    return this->m_MaxY;
 }
 
 float PointList::getMinY()
 {
-    return this->minY;
+    return this->m_MinY;
 }
 
 QPointF PointList::value(int index)
 {
-    return listPoints.value(index);
+    return m_PointsVec[index];
 }

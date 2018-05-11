@@ -1,5 +1,4 @@
-#ifndef VERTICALAXIS_H
-#define VERTICALAXIS_H
+#pragma once
 
 #include <QWidget>
 
@@ -7,7 +6,7 @@ class VerticalAxis : public QWidget
 {
     Q_OBJECT
 public:
-    explicit VerticalAxis(QWidget *parent = 0);
+    explicit VerticalAxis(QWidget* pParent = 0);
 
 signals:
 
@@ -16,17 +15,15 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent* pEvent);
 
 private:
     void dataPointMapToScreenY(double &yValue, double yAxisBoundMin, double yAxisBoundMax);
-    int max_steps = 2;
-    double axisBoundMin = 0.0;
-    double axisBoundMax = 10.0;
-    double axisRange = 10.0;
-    bool antiAliasing = false;
-    int lineWidth = 1;
-    QString units = "s";
+    int m_MaxSteps = 2;
+    double m_AxisBoundMin = 0.0;
+    double m_AxisBoundMax = 10.0;
+    double m_AxisRange = 10.0;
+    bool m_AntiAliasing = false;
+    int m_LineWidth = 1;
+    QString m_Units = "s";
 };
-
-#endif // VERTICALAXIS_H

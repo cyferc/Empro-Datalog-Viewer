@@ -9,19 +9,19 @@ class PlotDatalog : public QWidget
     Q_OBJECT
 
 public:
-    PlotDatalog(QWidget *parent = 0);
+    PlotDatalog(QWidget* pParent = 0);
     ~PlotDatalog();
 
     QVector<bool> vecChannelsDraw;
     QVector<bool> vecChannelsYAxis;
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
-    void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent* event);
-    void contextMenuEvent(QContextMenuEvent *event);
+    void mousePressEvent(QMouseEvent* pEvent);
+    void mouseMoveEvent(QMouseEvent* pEvent);
+    void wheelEvent(QWheelEvent* pEvent);
+    void paintEvent(QPaintEvent*);
+    void resizeEvent(QResizeEvent* pEvent);
+    void contextMenuEvent(QContextMenuEvent* pEvent);
 
 public slots:
     void setDrawPoints(bool p);
@@ -31,31 +31,31 @@ public slots:
     void setDrawCurrentValueMarkers(bool draw);
 
 signals:
-    void mousePressEventSignal(QMouseEvent *event);
-    void mouseMoveEventSignal(QMouseEvent *event);
-    void wheelEventSignal(QWheelEvent *event);
-    void resizeEventSignal(QResizeEvent* event);
+    void mousePressEventSignal(QMouseEvent* pEvent);
+    void mouseMoveEventSignal(QMouseEvent* pEvent);
+    void wheelEventSignal(QWheelEvent* pEvent);
+    void resizeEventSignal(QResizeEvent* pEvent);
 
 private:
     void __inline__ dataPointMapToScreenY(double &yValue, double yAxisBoundMin, double yAxisBoundMax);
     void __inline__ dataPointMapToScreenX(double &xValue, double xAxisBoundMin, double xAxisBoundMax);
 
-    const int currentValueMarkerLineThickness = 4;
-    const int currentValueMarkerLineHalfLength = 5;
+    const int cCurrentValueMarkerLineThickness = 4;
+    const int cCurrentValueMarkerLineHalfLength = 5;
 
-    const double lineWidth = 1.5;
-    const int lineColorBetweenA = 70;
-    const int lineColorBetweenB = 255;
+    const double cLineWidth = 1.5;
+    const int cLineColorBetweenA = 70;
+    const int cLineColorBetweenB = 255;
 
-    const int pointSize = 4;
+    const int cPointSize = 4;
 
-    int marginTop = 3;
-    int marginBottom = 3;
-    int marginLeft = 0;
-    int marginRight = 0;
+    int m_MarginTop = 3;
+    int m_MarginBottom = 3;
+    int m_MarginLeft = 0;
+    int m_MarginRight = 0;
 
-    QList<PointList*> listPlots;
-    bool drawPoints = false;
-    bool drawCurrentValueMarkers = true;
-    bool antiAliasing = false;
+    std::vector<PointList*> m_PlotsVec;
+    bool m_DrawPoints = false;
+    bool m_DrawCurrentValueMarkers = true;
+    bool m_AntiAliasing = false;
 };

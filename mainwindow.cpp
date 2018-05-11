@@ -3,40 +3,40 @@
 #include <QGridLayout>
 #include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *pParent) :
+    QMainWindow(pParent),
+    m_pUi(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    m_pUi->setupUi(this);
     setWindowTitle(cWindowTitle);
 
     // start Maximized
     showMaximized();
 
-    _widgetDatalogViewControl = new WidgetDatalogViewControl(this,
+    m_pWidgetDatalogViewControl = new WidgetDatalogViewControl(this,
                                                              this,
-                                                             ui->dockWidgetChannelList,
-                                                             ui->dockWidgetSelection);
+                                                             m_pUi->dockWidgetChannelList,
+                                                             m_pUi->dockWidgetSelection);
     QObject::connect(this,
                      &MainWindow::evenPlotSpacing,
-                     _widgetDatalogViewControl,
+                     m_pWidgetDatalogViewControl,
                      &WidgetDatalogViewControl::evenPlotSpacing);
 
-    QGridLayout *contentLayout = new QGridLayout(ui->centralWidget);
+    QGridLayout *contentLayout = new QGridLayout(m_pUi->centralWidget);
     contentLayout->setSpacing(0);
     contentLayout->setContentsMargins(0, 0, 0, 0);
 
-    contentLayout->addWidget(_widgetDatalogViewControl);
+    contentLayout->addWidget(m_pWidgetDatalogViewControl);
 
     // Add dock window view controls
-    ui->menuDock_Windows->addAction(ui->dockWidgetChannelList->toggleViewAction());
+    m_pUi->menuDock_Windows->addAction(m_pUi->dockWidgetChannelList->toggleViewAction());
     //ui->menuDock_Windows->addAction(ui->dockWidgetSelection->toggleViewAction());
-    ui->dockWidgetSelection->hide();
+    m_pUi->dockWidgetSelection->hide();
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_pUi;
 }
 
 void MainWindow::SetWindowTitle(QString title)
@@ -51,47 +51,47 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    _widgetDatalogViewControl->openDatalogClicked();
+    m_pWidgetDatalogViewControl->openDatalogClicked();
 }
 
 void MainWindow::on_actionAdd_Plot_triggered()
 {
-    _widgetDatalogViewControl->addPlot();
+    m_pWidgetDatalogViewControl->addPlot();
 }
 
 void MainWindow::on_actionDelete_Plot_triggered()
 {
-    _widgetDatalogViewControl->deleteBottomPlot();
+    m_pWidgetDatalogViewControl->deleteBottomPlot();
 }
 
 void MainWindow::on_actionShow_Points_triggered(bool checked)
 {
-    _widgetDatalogViewControl->showPoints(checked);
+    m_pWidgetDatalogViewControl->showPoints(checked);
 }
 
 void MainWindow::on_actionShow_Markers_triggered(bool checked)
 {
-    _widgetDatalogViewControl->showCurrentValueMarkers(checked);
+    m_pWidgetDatalogViewControl->showCurrentValueMarkers(checked);
 }
 
 void MainWindow::on_actionAnti_Aliasing_triggered(bool checked)
 {
-    _widgetDatalogViewControl->setAntialiasing(checked);
+    m_pWidgetDatalogViewControl->setAntialiasing(checked);
 }
 
 void MainWindow::on_actionRightMouseSingleSelection_triggered(bool checked)
 {
-    ui->actionRightMouseMultiSelection->setChecked(!checked);
+    m_pUi->actionRightMouseMultiSelection->setChecked(!checked);
 }
 
 void MainWindow::on_actionRightMouseMultiSelection_triggered(bool checked)
 {
-    ui->actionRightMouseSingleSelection->setChecked(!checked);
+    m_pUi->actionRightMouseSingleSelection->setChecked(!checked);
 }
 
 void MainWindow::on_actionSetup_triggered()
 {
-    _widgetDatalogViewControl->setupClicked();
+    m_pWidgetDatalogViewControl->setupClicked();
 }
 
 void MainWindow::on_actionFullscreen_triggered(bool checked)
@@ -113,12 +113,12 @@ void MainWindow::on_actionEven_Spacing_triggered()
 
 void MainWindow::on_actionZoom_In_triggered()
 {
-    _widgetDatalogViewControl->zoomIn();
+    m_pWidgetDatalogViewControl->zoomIn();
 }
 
 void MainWindow::on_actionZoom_Out_triggered()
 {
-    _widgetDatalogViewControl->zoomOut();
+    m_pWidgetDatalogViewControl->zoomOut();
 }
 
 void MainWindow::on_actionAbout_triggered()

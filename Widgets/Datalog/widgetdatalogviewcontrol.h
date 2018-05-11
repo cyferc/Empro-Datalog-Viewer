@@ -17,10 +17,10 @@ class WidgetDatalogViewControl : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WidgetDatalogViewControl(QWidget *parent,
-                                      MainWindow* mainWindow,
-                                      QDockWidget *dockWidgetChannelList,
-                                      QDockWidget *dockWidgetSelection);
+    explicit WidgetDatalogViewControl(QWidget* pParent,
+                                      MainWindow* pMainWindow,
+                                      QDockWidget* pDockWidgetChannelList,
+                                      QDockWidget* pDockWidgetSelection);
 
     void resetPlotVectorSizes();
     void zoom(double amount);
@@ -45,46 +45,46 @@ public slots:
     void openDatalogClicked();
     void addPlot();
     void deleteBottomPlot();
-    void plotMousePressEvent(QMouseEvent *event);
-    void plotMouseMoveEvent(QMouseEvent *event);
-    void plotWheelEvent(QWheelEvent *event);
-    void plotResizeEvent(QResizeEvent* event);
+    void plotMousePressEvent(QMouseEvent* pEvent);
+    void plotMouseMoveEvent(QMouseEvent* pEvent);
+    void plotWheelEvent(QWheelEvent* pEvent);
+    void plotResizeEvent(QResizeEvent* pEvent);
 
 private:
-
-    enum FileType_t
+    enum class eFileType
     {
-        FileType_Megasquirt_MSL,
-        FileType_CSV
-    } fileType;
+        Megasquirt_MSL,
+        CSV
+    };
 
     void deleteAllIn_ListOfPointLists();
     bool processDatalogLine(QByteArray line, int lineNumber);
     bool processDatalogFirstLine(QByteArray line);
     void addPlointListsToChannelList();
 
-    MainWindow* _mainWindow;
-    HorizontalAxis* horizontalAxis;
-    QSplitter* splitterPlots;
-    QTableWidget* tableChannelList;
-    QList<PointList*> listOfPointLists;
-    QMenu* plotContextMenu;
+    eFileType m_FileType;
+    MainWindow* m_pMainWindow;
+    HorizontalAxis* m_pHorizontalAxis;
+    QSplitter* m_pSplitterPlots;
+    QTableWidget* m_pTableChannelList;
+    std::vector<PointList*> m_VecOfPointLists;
+    QMenu* m_pPlotContextMenu;
 
-    double xAxisBoundMin = 2.0;
-    double xAxisBoundMax = 5.0;
-    const int initialXAxisBoundMax = 10; // initial zoom
+    double m_XAxisBoundMin = 2.0;
+    double m_XAxisBoundMax = 5.0;
+    const int m_InitialXAxisBoundMax = 10; // initial zoom
 
-    const int lineColorBetweenA = 70;
-    const int lineColorBetweenB = 255;
+    const int cLineColorBetweenA = 70;
+    const int cLineColorBetweenB = 255;
 
-    int timeColumn;
-    QString timeColumnName;
+    int m_TimeColumn;
+    QString m_TimeColumnName;
 
-    QPoint lastMousePos;
-    double originalXAxisBoundMin;
-    double originalXAxisBoundMax;
+    QPoint m_LastMousePos;
+    double m_OriginalXAxisBoundMin;
+    double m_OriginalXAxisBoundMax;
 
-    bool _antiAliasing = false;
-    bool _showCurrentValueMarkers = true;
-    bool _showPoints = false;
+    bool m_AntiAliasing = false;
+    bool m_ShowCurrentValueMarkers = true;
+    bool m_ShowPoints = false;
 };

@@ -14,7 +14,7 @@ public:
     ~PointList();
 
     void append(const QPointF& point);
-    int length();
+    int size();
 
     int getID();
 
@@ -46,23 +46,23 @@ public slots:
 
 private:
     int binarySearchX(double value);
-    QString name;
-    QString units;
-    QColor  lineColor;
+    QString m_Name;
+    QString m_Units;
+    QColor  m_LineColor;
 
-    double axisBoundMinX = 0.0;
-    double axisBoundMaxX = 10.0;
+    double m_AxisBoundMinX = 0.0;
+    double m_AxisBoundMaxX = 10.0;
 
-    double axisBoundMinY = 0.0;
-    double axisBoundMaxY = 10.0;
+    double m_AxisBoundMinY = 0.0;
+    double m_AxisBoundMaxY = 10.0;
 
-    // Index in listPoints
-    double axisBoundMinX_index = 0.0;
-    double axisBoundMaxX_index = 10.0;
+    // Index in m_ListPointsVec
+    double m_AxisBoundMinX_index = 0.0;
+    double m_AxisBoundMaxX_index = 10.0;
 
-    double maxX;
-    double minX;
-    double maxY;
-    double minY;
-    QList<QPointF> listPoints;
+    double m_MaxX;
+    double m_MinX;
+    double m_MaxY;
+    double m_MinY;
+    std::vector<QPointF> m_PointsVec;
 };

@@ -12,7 +12,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget* pParent = 0);
     ~MainWindow();
 
     void SetWindowTitle(QString title);
@@ -48,6 +48,6 @@ private slots:
     void on_actionAbout_triggered();
 
 private:
-    Ui::MainWindow *ui;
-    WidgetDatalogViewControl *_widgetDatalogViewControl;
+    Ui::MainWindow* m_pUi;
+    WidgetDatalogViewControl* m_pWidgetDatalogViewControl;
 };

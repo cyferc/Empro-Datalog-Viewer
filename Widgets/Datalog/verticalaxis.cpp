@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QDebug>
 
-VerticalAxis::VerticalAxis(QWidget *parent) : QWidget(parent)
+VerticalAxis::VerticalAxis(QWidget *pParent) : QWidget(pParent)
 {
     this->setMinimumWidth(30);
 
@@ -14,17 +14,17 @@ VerticalAxis::VerticalAxis(QWidget *parent) : QWidget(parent)
     setPalette(palette);
 }
 
-void VerticalAxis::resizeEvent(QResizeEvent *event)
+void VerticalAxis::resizeEvent(QResizeEvent* /*pEvent*/)
 {
-    max_steps = width() / 50;
+    m_MaxSteps = width() / 50;
 }
 
 void VerticalAxis::dataPointMapToScreenY(double &yValue, double yAxisBoundMin, double yAxisBoundMax)
 {
     yValue = Helpers::LinearInterpolation(yAxisBoundMin,
-                                          lineWidth,
+                                          m_LineWidth,
                                           yAxisBoundMax,
-                                          height() - lineWidth,
+                                          height() - m_LineWidth,
                                           yValue);
 }
 
@@ -34,16 +34,16 @@ void VerticalAxis::paintEvent(QPaintEvent *)
     QPainter painter(this);
 
     pen.setCosmetic(true);
-    pen.setWidth(lineWidth);
+    pen.setWidth(m_LineWidth);
     pen.setColor(QColor(255,255,255));
 
-    painter.setRenderHint(QPainter::Antialiasing, antiAliasing);
+    painter.setRenderHint(QPainter::Antialiasing, m_AntiAliasing);
     painter.setPen(pen);
 
     // Top line
     painter.drawLine(QPoint(width(), 0), QPoint(width(), height()));
 
-    double step_unaligned = axisRange / max_steps;
+    double step_unaligned = m_AxisRange / m_MaxSteps;
     double round_to;
 
     if (step_unaligned <= 0.001)
@@ -133,7 +133,7 @@ void VerticalAxis::paintEvent(QPaintEvent *)
         qDebug() << "step_u = 0\n";
         step_aligned = step_unaligned;
     }
-    double start_value = Helpers::round_down_to_nearest_d(axisBoundMin, round_to);
+    double start_value = Helpers::round_down_to_nearest_d(m_AxisBoundMin, round_to);
 
     qDebug() << "step_u:" << step_unaligned << "\tstep_a: " << step_aligned << "\tstart: " << start_value;
 /*
@@ -150,8 +150,8 @@ void VerticalAxis::setAxisBounds(double min, double max)
 {
     if (min > max)
         return;
-    axisBoundMin = min;
-    axisBoundMax = max;
-    axisRange = max - min;
+    m_AxisBoundMin = min;
+    m_AxisBoundMax = max;
+    m_AxisRange = max - min;
     repaint();
 }

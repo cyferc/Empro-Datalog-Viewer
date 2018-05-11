@@ -4,9 +4,9 @@
 
 #include <QDebug>
 
-HorizontalAxis::HorizontalAxis(QWidget *parent) : QWidget(parent)
+HorizontalAxis::HorizontalAxis(QWidget *pParent) : QWidget(pParent)
 {
-    this->setMinimumHeight(minimumHeight);
+    this->setMinimumHeight(m_MinimumHeight);
 
     setAutoFillBackground(true);
     QPalette palette(this->palette());
@@ -14,9 +14,9 @@ HorizontalAxis::HorizontalAxis(QWidget *parent) : QWidget(parent)
     setPalette(palette);
 }
 
-void HorizontalAxis::resizeEvent(QResizeEvent *event)
+void HorizontalAxis::resizeEvent(QResizeEvent */*event*/)
 {
-    max_steps = width() / 60;
+    m_MaxSteps = width() / 60;
 }
 
 void HorizontalAxis::dataPointMapToScreenX(double &xValue, double xAxisBoundMin, double xAxisBoundMax)
@@ -34,7 +34,7 @@ void HorizontalAxis::paintEvent(QPaintEvent *)
     QPainter painter(this);
 
     pen.setCosmetic(true);
-    pen.setWidth(lineWidth);
+    pen.setWidth(m_LineWidth);
     pen.setColor(QColor(255,255,255));
 
     painter.setPen(pen);
@@ -42,7 +42,7 @@ void HorizontalAxis::paintEvent(QPaintEvent *)
     // Top line
     painter.drawLine(QPoint(0, 0), QPoint(width(), 0));
 
-    double step_unaligned = axisRange / max_steps;
+    double step_unaligned = m_AxisRange / m_MaxSteps;
     double round_to;
 
     if (step_unaligned <= 0.001)
@@ -150,7 +150,7 @@ void HorizontalAxis::paintEvent(QPaintEvent *)
         round_to = 1000000;
     }
 
-    double start_value  = Helpers::round_down_to_nearest_d(axisBoundMin, round_to);
+    double start_value  = Helpers::round_down_to_nearest_d(m_AxisBoundMin, round_to);
     double step_aligned = Helpers::round_up_to_nearest_d(step_unaligned, round_to);
     if (step_aligned == 0.0)
     {
@@ -160,12 +160,12 @@ void HorizontalAxis::paintEvent(QPaintEvent *)
 
     //qDebug() << "step_u:" << step_unaligned << "\tstep_a: " << step_aligned << "\tstart: " << start_value;
 
-    for (double current_value = start_value - step_aligned; current_value < (axisBoundMax); current_value += step_aligned)
+    for (double current_value = start_value - step_aligned; current_value < (m_AxisBoundMax); current_value += step_aligned)
     {
         double xValue = current_value;
-        dataPointMapToScreenX(xValue, axisBoundMin, axisBoundMax);
+        dataPointMapToScreenX(xValue, m_AxisBoundMin, m_AxisBoundMax);
         painter.drawLine(QPoint(xValue, 0), QPoint(xValue, height()));
-        painter.drawText(QPoint(xValue + lineWidth + 2, 11), QString::number(current_value).append(" ").append(units));
+        painter.drawText(QPoint(xValue + m_LineWidth + 2, 11), QString::number(current_value).append(" ").append(m_Units));
     }
 }
 
@@ -173,8 +173,8 @@ void HorizontalAxis::setAxisBounds(double min, double max)
 {
     if (min > max)
         return;
-    axisBoundMin = min;
-    axisBoundMax = max;
-    axisRange = max - min;
+    m_AxisBoundMin = min;
+    m_AxisBoundMax = max;
+    m_AxisRange = max - min;
     repaint();
 }

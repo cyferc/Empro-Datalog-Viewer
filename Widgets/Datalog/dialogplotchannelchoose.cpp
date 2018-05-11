@@ -5,37 +5,37 @@
 #include <QDebug>
 #include "plotdatalog.h"
 
-DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointLists, QSplitter *splitterPlots, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DialogPlotChannelChoose),
-    _splitterPlots(splitterPlots),
-    _listOfPointLists(listOfPointLists)
+DialogPlotChannelChoose::DialogPlotChannelChoose(std::vector<PointList *> vecOfPointLists, QSplitter *pSplitterPlots, QWidget *pParent) :
+    QDialog(pParent),
+    m_pUi(new Ui::DialogPlotChannelChoose),
+    m_pSplitterPlots(pSplitterPlots),
+    m_VecOfPointLists(vecOfPointLists)
 {
-    ui->setupUi(this);
+    m_pUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Add stacked widget for tables
-    _stackedTables = new QStackedWidget();
-    QGridLayout *stackedLayout = new QGridLayout(ui->widgetTableContainer);
+    m_pStackedTablesWidget = new QStackedWidget();
+    QGridLayout *stackedLayout = new QGridLayout(m_pUi->widgetTableContainer);
     stackedLayout->setSpacing(0);
     stackedLayout->setContentsMargins(0, 0, 0, 0);
-    stackedLayout->addWidget(_stackedTables);
+    stackedLayout->addWidget(m_pStackedTablesWidget);
 
-    connect(ui->comboBoxPlotNumber,
+    connect(m_pUi->comboBoxPlotNumber,
             static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
-            _stackedTables,
+            m_pStackedTablesWidget,
             &QStackedWidget::setCurrentIndex);
 
     // Create table for each plot
-    for (int plotIndex = 0; plotIndex < splitterPlots->count(); plotIndex++)
+    for (int plotIndex = 0; plotIndex < pSplitterPlots->count(); plotIndex++)
     {
-        PlotDatalog* plot = qobject_cast<PlotDatalog *>(splitterPlots->children().at(plotIndex));
+        PlotDatalog* plot = qobject_cast<PlotDatalog *>(pSplitterPlots->children().at(plotIndex));
 
         // Add plot number to drop down list
-        ui->comboBoxPlotNumber->addItem(QString::number(plotIndex + 1));
+        m_pUi->comboBoxPlotNumber->addItem(QString::number(plotIndex + 1));
 
         // Create table for each plot
-        QTableWidget *table = new QTableWidget(listOfPointLists.count(), 3, this);
+        QTableWidget *table = new QTableWidget(vecOfPointLists.size(), 3, this);
         table->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
         table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
         table->setSelectionMode(QAbstractItemView::NoSelection);
@@ -43,25 +43,26 @@ DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointL
         table->verticalHeader()->hide();
         table->verticalHeader()->setDefaultSectionSize(17);
 
-        table->setHorizontalHeaderItem(ColumnChannel, new QTableWidgetItem("Channel"));
-        table->setColumnWidth(ColumnChannel, 228);
+        table->setHorizontalHeaderItem(cColumnChannel, new QTableWidgetItem("Channel"));
+        table->setColumnWidth(cColumnChannel, 228);
 
-        table->setHorizontalHeaderItem(ColumnPlot, new QTableWidgetItem("Plot"));
-        table->setColumnWidth(ColumnPlot, 40);
+        table->setHorizontalHeaderItem(cColumnPlot, new QTableWidgetItem("Plot"));
+        table->setColumnWidth(cColumnPlot, 40);
 
-        table->setHorizontalHeaderItem(ColumnYAxis, new QTableWidgetItem("Y Axis"));
-        table->setColumnWidth(ColumnYAxis, 40);
+        table->setHorizontalHeaderItem(cColumnYAxis, new QTableWidgetItem("Y Axis"));
+        table->setColumnWidth(cColumnYAxis, 40);
 
         // Add channels to table
-        for (int channel = 0; channel < listOfPointLists.count(); channel++)
+        int vecOfPointListsSize = static_cast<int>(vecOfPointLists.size());
+        for (int channel = 0; channel < vecOfPointListsSize; channel++)
         {
             // Column: Channel
-            PointList *pList = listOfPointLists.at(channel);
+            PointList *pList = vecOfPointLists[channel];
 
             QTableWidgetItem *itemName = new QTableWidgetItem(pList->getName());
             itemName->setFlags(itemName->flags() ^ Qt::ItemIsEditable);
 
-            table->setItem(channel, ColumnChannel, itemName);
+            table->setItem(channel, cColumnChannel, itemName);
 
             // Column: Plot
             QWidget   *chBoxContainerWidget = new QWidget();
@@ -80,7 +81,7 @@ DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointL
             pLayout->setAlignment(Qt::AlignCenter);
             pLayout->setContentsMargins(0, 0, 0, 0);
 
-            table->setCellWidget(channel, ColumnPlot, chBoxContainerWidget);
+            table->setCellWidget(channel, cColumnPlot, chBoxContainerWidget);
 
             // Column: Y Axis
             QWidget   *chBoxContainerWidgetYAxis = new QWidget();
@@ -106,21 +107,21 @@ DialogPlotChannelChoose::DialogPlotChannelChoose(QList<PointList *> listOfPointL
             pLayoutYAxis->setAlignment(Qt::AlignCenter);
             pLayoutYAxis->setContentsMargins(0, 0, 0, 0);
 
-            table->setCellWidget(channel, ColumnYAxis, chBoxContainerWidgetYAxis);
+            table->setCellWidget(channel, cColumnYAxis, chBoxContainerWidgetYAxis);
         }
 
         table->setFocus();
         table->selectRow(0);
 
         // Add widget to bottom of stack
-        _stackedTables->insertWidget(0, table);
-        _stackedTables->setCurrentIndex(0);
+        m_pStackedTablesWidget->insertWidget(0, table);
+        m_pStackedTablesWidget->setCurrentIndex(0);
     }
 }
 
 DialogPlotChannelChoose::~DialogPlotChannelChoose()
 {
-    delete ui;
+    delete m_pUi;
 }
 
 ///
@@ -133,11 +134,11 @@ QTableWidget *DialogPlotChannelChoose::getCurrentTable(int index)
     QWidget *table;
     if (index >= 0)
     {
-        table = _stackedTables->widget(index);
+        table = m_pStackedTablesWidget->widget(index);
     }
     else
     {
-        table = _stackedTables->widget(ui->comboBoxPlotNumber->currentIndex());
+        table = m_pStackedTablesWidget->widget(m_pUi->comboBoxPlotNumber->currentIndex());
     }
 
     return qobject_cast<QTableWidget*>(table);
@@ -151,7 +152,7 @@ void DialogPlotChannelChoose::checkBoxPlotStateChanged(int state)
     // Get the sender row in the table
     for (int i = 0; i < getCurrentTable()->rowCount(); i++)
     {
-        if (getCurrentTable()->cellWidget(i, ColumnPlot)->children().at(0) == senderCheckBox)
+        if (getCurrentTable()->cellWidget(i, cColumnPlot)->children().at(0) == senderCheckBox)
         {
             senderRow = i;
             break;
@@ -164,7 +165,7 @@ void DialogPlotChannelChoose::checkBoxPlotStateChanged(int state)
         return;
     }
 
-    QCheckBox *chBoxYAxis = qobject_cast<QCheckBox *>(getCurrentTable()->cellWidget(senderRow, ColumnYAxis)->children().at(0));
+    QCheckBox *chBoxYAxis = qobject_cast<QCheckBox *>(getCurrentTable()->cellWidget(senderRow, cColumnYAxis)->children().at(0));
 
     if (state == false)
     {
@@ -173,7 +174,7 @@ void DialogPlotChannelChoose::checkBoxPlotStateChanged(int state)
     chBoxYAxis->setEnabled(state);
 }
 
-void DialogPlotChannelChoose::checkBoxYAxisStateChanged(int state)
+void DialogPlotChannelChoose::checkBoxYAxisStateChanged(int /*state*/)
 {
     int senderRow = -1;
     QCheckBox* senderCheckBox = qobject_cast<QCheckBox*>(sender());
@@ -181,7 +182,7 @@ void DialogPlotChannelChoose::checkBoxYAxisStateChanged(int state)
     // Get the sender row in the table
     for (int i = 0; i < getCurrentTable()->rowCount(); i++)
     {
-        if (getCurrentTable()->cellWidget(i, ColumnPlot)->children().at(0) == senderCheckBox)
+        if (getCurrentTable()->cellWidget(i, cColumnPlot)->children().at(0) == senderCheckBox)
         {
             senderRow = i;
             break;
@@ -246,7 +247,7 @@ void DialogPlotChannelChoose::on_btnSelectAll_clicked()
 {
     for (int row = 0; row < getCurrentTable()->rowCount(); row++)
     {
-        QCheckBox *chBox = qobject_cast<QCheckBox *>(getCurrentTable()->cellWidget(row, ColumnPlot)->children().at(0));
+        QCheckBox *chBox = qobject_cast<QCheckBox *>(getCurrentTable()->cellWidget(row, cColumnPlot)->children().at(0));
         chBox->setChecked(true);
     }
 }
@@ -255,28 +256,28 @@ void DialogPlotChannelChoose::on_btnDeselectAll_clicked()
 {
     for (int row = 0; row < getCurrentTable()->rowCount(); row++)
     {
-        QCheckBox *chBox = qobject_cast<QCheckBox *>(getCurrentTable()->cellWidget(row, ColumnPlot)->children().at(0));
+        QCheckBox *chBox = qobject_cast<QCheckBox *>(getCurrentTable()->cellWidget(row, cColumnPlot)->children().at(0));
         chBox->setChecked(false);
     }
 }
 
 void DialogPlotChannelChoose::on_buttonBox_accepted()
 {
-    for (int plotIndex = 0; plotIndex < _splitterPlots->count(); plotIndex++)
+    for (int plotIndex = 0; plotIndex < m_pSplitterPlots->count(); plotIndex++)
     {
-        PlotDatalog* plot = qobject_cast<PlotDatalog*>(_splitterPlots->widget(plotIndex));
+        PlotDatalog* plot = qobject_cast<PlotDatalog*>(m_pSplitterPlots->widget(plotIndex));
 
         // Clear all points from all plots
         plot->clearPointLists();
 
         for (int channel = 0; channel < getCurrentTable(plotIndex)->rowCount(); channel++)
         {
-            QCheckBox *chBoxDrawChannel = qobject_cast<QCheckBox *>(getCurrentTable(plotIndex)->cellWidget(channel, ColumnPlot)->children().at(0));
-            QCheckBox *chBoxYAxis = qobject_cast<QCheckBox *>(getCurrentTable(plotIndex)->cellWidget(channel, ColumnYAxis)->children().at(0));
+            QCheckBox *chBoxDrawChannel = qobject_cast<QCheckBox *>(getCurrentTable(plotIndex)->cellWidget(channel, cColumnPlot)->children().at(0));
+            QCheckBox *chBoxYAxis = qobject_cast<QCheckBox *>(getCurrentTable(plotIndex)->cellWidget(channel, cColumnYAxis)->children().at(0));
 
             if (chBoxDrawChannel->isChecked())
             {
-                plot->addPointList(_listOfPointLists.at(channel));
+                plot->addPointList(m_VecOfPointLists.at(channel));
             }
 
             plot->vecChannelsDraw[channel] = chBoxDrawChannel->isChecked();
